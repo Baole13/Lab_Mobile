@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="false"
+        android:label="Fruit Shop Management"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Starter">
+
+        <!-- Người 2: Login & Customer Profile -->
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CustomerProfileActivity"
+            android:exported="false" />
+
+        <!-- Người 3: Fruit Management -->
+        <activity
+            android:name=".activities.FruitListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.FruitFormActivity"
+            android:exported="false" />
+
+        <!-- Người 4: Order Management & Integration -->
+        <activity
+            android:name=".activities.PlaceOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.OrderHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.OrderManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

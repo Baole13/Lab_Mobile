@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary (Emerald) -->
+    <color name="primary_50">#ECFDF5</color>
+    <color name="primary_100">#D1FAE5</color>
+    <color name="primary_200">#A7F3D0</color>
+    <color name="primary_500">#10B981</color>
+    <color name="primary_600">#059669</color>
+    <color name="primary_700">#047857</color>
+
+    <!-- Secondary (Amber) -->
+    <color name="secondary_50">#FFFBEB</color>
+    <color name="secondary_100">#FEF3C7</color>
+    <color name="secondary_400">#FBBF24</color>
+    <color name="secondary_500">#F59E0B</color>
+    <color name="secondary_600">#D97706</color>
+
+    <!-- Surface (Light Mode) -->
+    <color name="surface_background">#F8FAFC</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_card_muted">#F1F5F9</color>
+    <color name="surface_border">#E2E8F0</color>
+
+    <!-- Text (Light Mode) -->
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_muted">#94A3B8</color>
+    <color name="text_inverse">#FFFFFF</color>
+
+    <!-- Status Tokens -->
+    <color name="status_discount">#EF4444</color>
+    <color name="status_discount_bg">#FEE2E2</color>
+    <color name="status_discount_text">#DC2626</color>
+    <color name="status_success">#10B981</color>
+    <color name="status_rating">#F59E0B</color>
+    <color name="status_confirmed_bg">#DBEAFE</color>
+    <color name="status_confirmed_text">#1D4ED8</color>
+</resources>
