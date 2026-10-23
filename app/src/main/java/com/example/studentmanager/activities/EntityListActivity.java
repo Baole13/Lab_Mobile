@@ -33,7 +33,7 @@ public class EntityListActivity extends Activity {
         auth = new AuthManager(this);
         table = getIntent().getStringExtra("table");
         spec = Schema.find(table);
-        canEdit = AuthManager.TEACHER.equals(auth.getRole());
+        canEdit = AuthManager.ADMIN.equals(auth.getRole());
         if (!auth.isLoggedIn() || spec == null ||
             (!canEdit && !Schema.SCORE.equals(table) && !Schema.STUDENT.equals(table))) {
             finish(); return;

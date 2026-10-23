@@ -2,12 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="false"
-        android:label="Test 2 Starter"
+        android:label="Fruit Shop"
         android:supportsRtl="true"
         android:theme="@style/Theme.Starter">
         <activity android:name=".activities.EditRecordActivity" android:exported="false" />
         <activity android:name=".activities.EntityListActivity" android:exported="false" />
         <activity android:name=".activities.LoginActivity" android:exported="false" />
+        <activity android:name=".activities.CustomerProfileActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.studentmanager.activities.EntityListActivity;
+import com.example.studentmanager.activities.CustomerProfileActivity;
 import com.example.studentmanager.activities.LoginActivity;
 import com.example.studentmanager.dal.Schema;
 import com.example.studentmanager.utils.AuthManager;
@@ -22,13 +23,16 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         ((TextView)findViewById(R.id.tvGreeting)).setText("Hello, " + auth.getUsername() + " (" + auth.getRole() + ")");
         LinearLayout menu = findViewById(R.id.menuContainer);
-        if (AuthManager.TEACHER.equals(auth.getRole())) {
-            add(menu, "Manage students", Schema.STUDENT);
-            add(menu, "Manage teachers", Schema.TEACHER);
-            add(menu, "Manage scores", Schema.SCORE);
-        } else if (AuthManager.STUDENT.equals(auth.getRole())) {
-            add(menu, "My profile (read only)", Schema.STUDENT);
-            add(menu, "My scores (read only)", Schema.SCORE);
+        if (AuthManager.CUSTOMER.equals(auth.getRole())) {
+            Button profileButton = new Button(this);
+            profileButton.setText("Hồ sơ của tôi");
+            menu.addView(profileButton);
+            profileButton.setOnClickListener(v ->
+                startActivity(new Intent(this, CustomerProfileActivity.class)));
+        } else if (AuthManager.ADMIN.equals(auth.getRole())) {
+            TextView notice = new TextView(this);
+            notice.setText("Đã đăng nhập quyền Admin. Màn hình quản lý trái cây/đơn hàng sẽ được ghép từ các module tương ứng.");
+            menu.addView(notice);
         }
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
             auth.logout();

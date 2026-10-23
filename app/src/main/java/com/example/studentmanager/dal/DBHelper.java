@@ -19,14 +19,14 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override public void onCreate(SQLiteDatabase db) {
         for (String sql : Schema.CREATE_SQL) db.execSQL(sql);
         // Demo accounts in SQLite mirror AuthManager's SharedPreferences demo list.
-        ContentValues teacher = new ContentValues();
-        teacher.put("id", 1); teacher.put("username", "teacher");
-        teacher.put("password", AuthManager.hash("123456"));teacher.put("role", AuthManager.TEACHER);
-        db.insertOrThrow("Account", null, teacher);
-        ContentValues student = new ContentValues();
-        student.put("id", 2); student.put("username", "student");
-        student.put("password", AuthManager.hash("123456")); student.put("role", AuthManager.STUDENT);
-        db.insertOrThrow("Account", null, student);
+        ContentValues admin = new ContentValues();
+        admin.put("id", 1); admin.put("username", "admin");
+        admin.put("password", AuthManager.hash("123456")); admin.put("role", AuthManager.ADMIN);
+        db.insertOrThrow("Account", null, admin);
+        ContentValues customer = new ContentValues();
+        customer.put("id", 2); customer.put("username", "customer");
+        customer.put("password", AuthManager.hash("123456")); customer.put("role", AuthManager.CUSTOMER);
+        db.insertOrThrow("Account", null, customer);
         db.execSQL("INSERT INTO Student(code,fullname,email,accountId) VALUES('S001','Demo Student','student@example.com',2)");
         db.execSQL("INSERT INTO Teacher(code,fullname,email,accountId) VALUES('T001','Demo Teacher','teacher@example.com',1)");
         db.execSQL("INSERT INTO Score(studentCode,teacherCode,subject,score) VALUES('S001','T001','Android',8.5)");

@@ -5,22 +5,22 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="24dp" android:gravity="center_vertical">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Test 2 Starter" android:textSize="28sp" android:textStyle="bold"
+            android:text="Fruit Shop" android:textSize="28sp" android:textStyle="bold"
             android:textColor="#16253A" android:layout_marginBottom="8dp" />
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Login • 2 roles • SharedPreferences" android:textSize="15sp"
+            android:text="Đăng nhập với quyền Admin hoặc Customer" android:textSize="15sp"
             android:layout_marginBottom="24dp" />
         <EditText android:id="@+id/username" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Username"
+            android:layout_height="wrap_content" android:hint="Tên đăng nhập"
             android:inputType="textPersonName" android:singleLine="true" />
         <EditText android:id="@+id/password" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Password"
+            android:layout_height="wrap_content" android:hint="Mật khẩu"
             android:inputType="textPassword" android:singleLine="true" />
         <Button android:id="@+id/btnLogin" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="LOGIN"
+            android:layout_height="wrap_content" android:text="ĐĂNG NHẬP"
             android:layout_marginTop="16dp" />
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Demo: teacher / 123456    |    student / 123456"
+            android:text="Demo Admin: admin / 123456\nDemo Customer: customer / 123456"
             android:layout_marginTop="16dp" android:textSize="13sp" />
     </LinearLayout>
 </ScrollView>

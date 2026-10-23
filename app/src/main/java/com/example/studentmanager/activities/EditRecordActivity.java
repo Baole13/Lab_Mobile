@@ -25,7 +25,7 @@ public class EditRecordActivity extends Activity {
         super.onCreate(state);
         AuthManager auth = new AuthManager(this);
         spec = Schema.find(getIntent().getStringExtra("table"));
-        if (!auth.isLoggedIn() || !AuthManager.TEACHER.equals(auth.getRole()) || spec == null) {
+        if (!auth.isLoggedIn() || !AuthManager.ADMIN.equals(auth.getRole()) || spec == null) {
             finish(); return;
         }
         db = new DBHelper(this);

@@ -5,7 +5,7 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="20dp">
         <TextView android:id="@+id/tvGreeting" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="Dashboard"
+            android:layout_height="wrap_content" android:text="Fruit Shop Dashboard"
             android:textSize="25sp" android:textStyle="bold" android:textColor="#16253A"
             android:layout_marginBottom="16dp" />
         <LinearLayout android:id="@+id/menuContainer" android:layout_width="match_parent"

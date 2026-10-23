@@ -7,9 +7,9 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
-/** Demo account list AND logged-in session are stored in SharedPreferences. */
+/** Demo account list and the active Admin/Customer session are stored in SharedPreferences. */
 public class AuthManager {
-    public static final String TEACHER = "TEACHER", STUDENT = "STUDENT";
+    public static final String ADMIN = "Admin", CUSTOMER = "Customer";
     private static final String FILE = "login_accounts";
     private final SharedPreferences prefs;
     public AuthManager(Context context) {
@@ -17,11 +17,28 @@ public class AuthManager {
         seedDemoAccounts();
     }
     private void seedDemoAccounts() {
-        if (prefs.contains("accounts_json")) return;
+        if (hasCurrentDemoAccounts()) return;
         JSONArray accounts = new JSONArray();
-        accounts.put(createAccount(1, "teacher", "123456", TEACHER));
-        accounts.put(createAccount(2, "student", "123456", STUDENT));
-        prefs.edit().putString("accounts_json", accounts.toString()).apply();
+        accounts.put(createAccount(1, "admin", "123456", ADMIN));
+        accounts.put(createAccount(2, "customer", "123456", CUSTOMER));
+        prefs.edit().putString("accounts_json", accounts.toString())
+            .remove("loggedIn").remove("username").remove("role").remove("accountId").apply();
+    }
+    private boolean hasCurrentDemoAccounts() {
+        try {
+            JSONArray accounts = new JSONArray(prefs.getString("accounts_json", "[]"));
+            boolean adminFound = false, customerFound = false;
+            for (int i = 0; i < accounts.length(); i++) {
+                JSONObject account = accounts.getJSONObject(i);
+                adminFound |= "admin".equals(account.optString("username")) &&
+                    ADMIN.equals(account.optString("role"));
+                customerFound |= "customer".equals(account.optString("username")) &&
+                    CUSTOMER.equals(account.optString("role"));
+            }
+            return adminFound && customerFound;
+        } catch (Exception ignored) {
+            return false;
+        }
     }
     private JSONObject createAccount(int id, String name, String password, String role) {
         JSONObject o = new JSONObject();
@@ -32,15 +49,19 @@ public class AuthManager {
         return o;
     }
     public boolean login(String username, String password) {
+        String normalizedUsername = username == null ? "" : username.trim();
+        if (normalizedUsername.isEmpty() || password == null || password.isEmpty()) return false;
         try {
             JSONArray accounts = new JSONArray(prefs.getString("accounts_json", "[]"));
             for (int i = 0; i < accounts.length(); i++) {
                 JSONObject a = accounts.getJSONObject(i);
-                if (username.trim().equals(a.optString("username")) &&
-                    hash(password).equals(a.optString("passwordHash"))) {
+                String role = a.optString("role");
+                if (normalizedUsername.equals(a.optString("username")) &&
+                    hash(password).equals(a.optString("passwordHash")) &&
+                    (ADMIN.equals(role) || CUSTOMER.equals(role))) {
                     prefs.edit().putBoolean("loggedIn", true)
                         .putString("username", a.optString("username"))
-                        .putString("role", a.optString("role"))
+                        .putString("role", role)
                         .putInt("accountId", a.optInt("id")).apply();
                     return true;
                 }
@@ -52,7 +73,11 @@ public class AuthManager {
         prefs.edit().remove("loggedIn").remove("username")
             .remove("role").remove("accountId").apply();
     }
-    public boolean isLoggedIn() { return prefs.getBoolean("loggedIn", false); }
+    public boolean isLoggedIn() {
+        String role = getRole();
+        return prefs.getBoolean("loggedIn", false) && getAccountId() > 0 &&
+            (ADMIN.equals(role) || CUSTOMER.equals(role));
+    }
     public String getUsername() { return prefs.getString("username", ""); }
     public String getRole() { return prefs.getString("role", ""); }
     public int getAccountId() { return prefs.getInt("accountId", -1); }
