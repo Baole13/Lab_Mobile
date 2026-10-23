@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Starter" parent="android:style/Theme.Material.Light.NoActionBar">
+    <style name="Theme.Starter" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:colorPrimary">@color/primary_500</item>
         <item name="android:colorPrimaryDark">@color/primary_600</item>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/fruit_background">
+    <FrameLayout android:id="@+id/fragmentContainer" android:layout_width="match_parent" android:layout_height="match_parent" />
+    <LinearLayout android:id="@+id/hostError" android:visibility="gone" android:gravity="center"
+        android:orientation="vertical" android:padding="24dp" android:background="@color/fruit_background"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <TextView android:id="@+id/tvHostError" android:text="Không thể tải dữ liệu trái cây."
+            android:gravity="center" android:textColor="@color/fruit_text_primary" android:textSize="16sp"
+            android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <Button android:id="@+id/btnHostRetry" android:text="Thử lại" android:layout_marginTop="12dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+</FrameLayout>

@@ -12,6 +12,7 @@
         <activity android:name=".activities.PlaceOrderActivity" android:exported="false" />
         <activity android:name=".activities.OrderHistoryActivity" android:exported="false" />
         <activity android:name=".activities.OrderManagementActivity" android:exported="false" />
+        <activity android:name=".activities.FruitManagementActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

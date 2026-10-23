@@ -510,6 +510,7 @@ public class PlaceOrderActivity extends Activity {
             return;
         }
 
+        final double orderTotal = total;
         String nowStr = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(new Date());
         String message = "Khách hàng: " + currentCustomer.getFullname() + " (#" + currentCustomer.getId() + ")\n"
                 + "Ngày đặt: " + nowStr + "\n"
@@ -546,7 +547,7 @@ public class PlaceOrderActivity extends Activity {
                         Order newOrder = new Order(
                                 currentCustomer.getId(),
                                 nowStr,
-                                total,
+                                orderTotal,
                                 Order.STATUS_PENDING
                         );
                         long orderId = db.insertOrder(newOrder);

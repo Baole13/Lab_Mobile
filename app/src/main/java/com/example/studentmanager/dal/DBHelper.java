@@ -18,6 +18,10 @@ import java.util.List;
  * Provides strongly-typed CRUD APIs and seed data for the entire development team.
  */
 public class DBHelper extends SQLiteOpenHelper {
+    private static final android.database.ContentObservable fruitChanges = new android.database.ContentObservable();
+    public static void registerFruitObserver(android.database.ContentObserver observer) { fruitChanges.registerObserver(observer); }
+    public static void unregisterFruitObserver(android.database.ContentObserver observer) { fruitChanges.unregisterObserver(observer); }
+
 
     public DBHelper(Context context) {
         super(context, Schema.DB_NAME, null, Schema.DB_VERSION);
@@ -274,6 +278,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("quantity", newQty);
         int rows = getWritableDatabase().update(Schema.FRUIT, cv, "id = ?", new String[]{String.valueOf(fruitId)});
+        if (rows > 0) fruitChanges.dispatchChange(false);
         return rows > 0;
     }
 
@@ -366,7 +371,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public int update(String table, long id, ContentValues values) {
         requireTable(table);
         String safeTable = table.equalsIgnoreCase("Order") ? "\"Order\"" : table;
-        return getWritableDatabase().update(safeTable, values, "id=?", new String[]{String.valueOf(id)});
+        int count = getWritableDatabase().update(safeTable, values, "id=?", new String[]{String.valueOf(id)});
+        if (count > 0 && Schema.FRUIT.equals(table)) fruitChanges.dispatchChange(false);
+        return count;
     }
 
     public int delete(String table, long id) {

@@ -32,6 +32,11 @@ public class EditRecordActivity extends Activity {
             return;
         }
 
+        if (Schema.FRUIT.equals(spec.name)) {
+            android.content.Intent intent = new android.content.Intent(this, FruitManagementActivity.class);
+            intent.putExtra("edit_fruit_id", (int) getIntent().getLongExtra("id", -1));
+            startActivity(intent); finish(); return;
+        }
         db = new DBHelper(this);
         recordId = getIntent().getLongExtra("id", -1);
         setContentView(R.layout.activity_form);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+<TextView android:id="@+id/tvTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="24sp" android:textStyle="bold" />
+<ProgressBar android:id="@+id/progressLoading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@+id/name" android:text="Tên trái cây" android:layout_marginTop="12dp" />
+<EditText android:id="@+id/name" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="text" android:saveEnabled="true" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@+id/category" android:text="Loại trái cây" android:layout_marginTop="12dp" />
+<EditText android:id="@+id/category" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="text" android:saveEnabled="true" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@+id/price" android:text="Giá (đồng), ví dụ 45000 hoặc 45000.5" android:layout_marginTop="12dp" />
+<EditText android:id="@+id/price" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="numberDecimal" android:saveEnabled="true" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@+id/quantity" android:text="Số lượng" android:layout_marginTop="12dp" />
+<EditText android:id="@+id/quantity" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="number" android:saveEnabled="true" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@+id/expiryDate" android:text="Hạn sử dụng (yyyy-MM-dd)" android:layout_marginTop="12dp" />
+<EditText android:id="@+id/expiryDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="date" android:saveEnabled="true" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@+id/description" android:text="Mô tả" android:layout_marginTop="12dp" />
+<EditText android:id="@+id/description" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textMultiLine" android:saveEnabled="true" />
+<TextView android:id="@+id/tvError" android:layout_width="match_parent" android:layout_height="wrap_content" android:accessibilityLiveRegion="polite" />
+<Button android:id="@+id/btnRetry" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Tải lại" android:visibility="gone" />
+<Button android:id="@+id/btnSave" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Lưu" />
+<Button android:id="@+id/btnCancel" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Quay lại" />
+</LinearLayout></ScrollView>

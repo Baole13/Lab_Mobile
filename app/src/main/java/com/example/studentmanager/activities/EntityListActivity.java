@@ -43,6 +43,9 @@ public class EntityListActivity extends Activity {
             return;
         }
 
+        if (Schema.FRUIT.equals(spec.name) && auth.isAdmin()) {
+            startActivity(new Intent(this, FruitManagementActivity.class)); finish(); return;
+        }
         db = new DBHelper(this);
         setContentView(R.layout.activity_list);
         ((TextView) findViewById(R.id.title)).setText(spec.title + (canEdit ? "" : " (Xem)"));

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fruit_primary_light">#ECFDF5</color>
+    <color name="fruit_primary">#10B981</color>
+    <color name="fruit_primary_dark">#047857</color>
+    <color name="fruit_background">#F8FAFC</color>
+    <color name="fruit_surface">#FFFFFF</color>
+    <color name="fruit_surface_muted">#F1F5F9</color>
+    <color name="fruit_border">#E2E8F0</color>
+    <color name="fruit_text_primary">#0F172A</color>
+    <color name="fruit_text_secondary">#64748B</color>
+    <color name="fruit_warning">#F59E0B</color>
+    <color name="fruit_error">#EF4444</color>
+</resources>
