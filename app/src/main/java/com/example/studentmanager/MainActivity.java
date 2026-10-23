@@ -13,23 +13,31 @@ import com.example.studentmanager.utils.AuthManager;
 
 public class MainActivity extends Activity {
     private AuthManager auth;
-    @Override protected void onCreate(Bundle state) {
+
+    @Override
+    protected void onCreate(Bundle state) {
         super.onCreate(state);
         auth = new AuthManager(this);
         if (!auth.isLoggedIn()) {
-            startActivity(new Intent(this, LoginActivity.class)); finish(); return;
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
         }
         setContentView(R.layout.activity_main);
-        ((TextView)findViewById(R.id.tvGreeting)).setText("Hello, " + auth.getUsername() + " (" + auth.getRole() + ")");
+        ((TextView) findViewById(R.id.tvGreeting)).setText(
+                "Xin chào, " + auth.getUsername() + " (" + auth.getRole() + ")");
+
         LinearLayout menu = findViewById(R.id.menuContainer);
-        if (AuthManager.TEACHER.equals(auth.getRole())) {
-            add(menu, "Manage students", Schema.STUDENT);
-            add(menu, "Manage teachers", Schema.TEACHER);
-            add(menu, "Manage scores", Schema.SCORE);
-        } else if (AuthManager.STUDENT.equals(auth.getRole())) {
-            add(menu, "My profile (read only)", Schema.STUDENT);
-            add(menu, "My scores (read only)", Schema.SCORE);
+        if (AuthManager.ADMIN.equalsIgnoreCase(auth.getRole())) {
+            add(menu, "📦 Quản lý Trái Cây (Fruits)", Schema.FRUIT);
+            add(menu, "📑 Quản lý Đơn Hàng (Orders)", Schema.ORDER);
+            add(menu, "👥 Quản lý Khách Hàng (Customers)", Schema.CUSTOMER);
+        } else {
+            add(menu, "🍎 Xem & Tìm Trái Cây (Fruits)", Schema.FRUIT);
+            add(menu, "🛒 Lịch Sử Đơn Hàng (Orders)", Schema.ORDER);
+            add(menu, "👤 Hồ Sơ Khách Hàng (Profile)", Schema.CUSTOMER);
         }
+
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
             auth.logout();
             Intent i = new Intent(this, LoginActivity.class);
@@ -37,12 +45,15 @@ public class MainActivity extends Activity {
             startActivity(i);
         });
     }
+
     private void add(LinearLayout menu, String caption, String table) {
-        Button b = new Button(this);b.setText(caption);
+        Button b = new Button(this);
+        b.setText(caption);
         menu.addView(b);
         b.setOnClickListener(v -> {
             Intent i = new Intent(this, EntityListActivity.class);
-            i.putExtra("table", table);startActivity(i);
+            i.putExtra("table", table);
+            startActivity(i);
         });
     }
 }

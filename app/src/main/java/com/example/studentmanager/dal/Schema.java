@@ -3,57 +3,121 @@ package com.example.studentmanager.dal;
 import java.util.Arrays;
 import java.util.List;
 
-/** CHANGE HERE when the official test gives different tables/columns. */
+/**
+ * Central schema metadata and SQL statements for Fruit Shop Management.
+ */
 public final class Schema {
     private Schema() {}
-    public static final int DB_VERSION = 1; // BUMP when schema changes on an existing install.
-    public static final String STUDENT = "Student";
-    public static final String TEACHER = "Teacher";
-    public static final String SCORE = "Score";
+
+    public static final String DB_NAME = "fruit_shop.db";
+    public static final int DB_VERSION = 1;
+
+    // Table names
+    public static final String ACCOUNT = "Account";
+    public static final String CUSTOMER = "Customer";
+    public static final String FRUIT = "Fruit";
+    public static final String ORDER = "Order";
+
+    // Legacy aliases for template compatibility
+    public static final String STUDENT = CUSTOMER;
+    public static final String TEACHER = FRUIT;
+    public static final String SCORE = ORDER;
+
+    // Roles
+    public static final String ROLE_ADMIN = "Admin";
+    public static final String ROLE_CUSTOMER = "Customer";
 
     public static final int TEXT = 0, INTEGER = 1, DECIMAL = 2;
+
     public static final class Field {
         public final String name, label;
         public final int type;
         public final boolean required;
         public Field(String name, String label, int type, boolean required) {
-            this.name = name; this.label = label; this.type = type; this.required = required;
+            this.name = name;
+            this.label = label;
+            this.type = type;
+            this.required = required;
         }
     }
+
     public static final class Table {
         public final String name, title;
         public final List<Field> fields;
         public Table(String name, String title, Field... fields) {
-            this.name = name; this.title = title; this.fields = Arrays.asList(fields);
+            this.name = name;
+            this.title = title;
+            this.fields = Arrays.asList(fields);
         }
     }
-    public static final Table STUDENTS = new Table(STUDENT, "Students",
-        new Field("code", "Student code", TEXT, true),
-        new Field("fullname", "Full name", TEXT, true),
-        new Field("email", "Email", TEXT, false),
-        new Field("accountId", "Account ID (optional)", INTEGER, false));
-    // The sample Score.teacherCode requires Teacher.code; this fixes that mismatch.
-    public static final Table TEACHERS = new Table(TEACHER, "Teachers",
-        new Field("code", "Teacher code", TEXT, true),
-        new Field("fullname", "Full name", TEXT, true),
-        new Field("email", "Email", TEXT, false),
-        new Field("accountId", "Account ID (optional)", INTEGER, false));
-    public static final Table SCORES = new Table(SCORE, "Scores",
-        new Field("studentCode", "Student code", TEXT, true),
-        new Field("teacherCode", "Teacher code", TEXT, true),
-        new Field("subject", "Subject", TEXT, true),
-        new Field("score", "Score (0 to 10)", DECIMAL, true));
+
+    public static final Table ACCOUNTS = new Table(ACCOUNT, "Accounts",
+        new Field("username", "Username", TEXT, true),
+        new Field("password", "Password", TEXT, true),
+        new Field("role", "Role (Admin/Customer)", TEXT, true));
+
+    public static final Table CUSTOMERS = new Table(CUSTOMER, "Customers",
+        new Field("fullname", "Full Name", TEXT, true),
+        new Field("phone", "Phone Number", TEXT, true),
+        new Field("email", "Email Address", TEXT, false),
+        new Field("accountId", "Account ID", INTEGER, true));
+
+    public static final Table FRUITS = new Table(FRUIT, "Fruits",
+        new Field("name", "Fruit Name", TEXT, true),
+        new Field("category", "Category", TEXT, true),
+        new Field("price", "Price (VND)", DECIMAL, true),
+        new Field("quantity", "Stock Quantity", INTEGER, true),
+        new Field("expiryDate", "Expiry Date (YYYY-MM-DD)", TEXT, true),
+        new Field("description", "Description", TEXT, false));
+
+    public static final Table ORDERS = new Table(ORDER, "Orders",
+        new Field("customerId", "Customer ID", INTEGER, true),
+        new Field("orderDate", "Order Date", TEXT, true),
+        new Field("totalAmount", "Total Amount", DECIMAL, true),
+        new Field("status", "Status (Pending/Confirmed/Completed)", TEXT, true));
 
     public static Table find(String name) {
-        for (Table t : Arrays.asList(STUDENTS, TEACHERS, SCORES))
-            if (t.name.equals(name)) return t;
-        return null; // whitelist unknown table names
+        if (name == null) return null;
+        for (Table t : Arrays.asList(ACCOUNTS, CUSTOMERS, FRUITS, ORDERS)) {
+            if (t.name.equalsIgnoreCase(name)) return t;
+        }
+        return null;
     }
 
     public static final String[] CREATE_SQL = {
-        "CREATE TABLE Account (id INTEGER PRIMARY KEY, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, role TEXT NOT NULL)",
-        "CREATE TABLE Student (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT NOT NULL UNIQUE, fullname TEXT NOT NULL, email TEXT, accountId INTEGER, FOREIGN KEY(accountId) REFERENCES Account(id))",
-        "CREATE TABLE Teacher (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT NOT NULL UNIQUE, fullname TEXT NOT NULL, email TEXT, accountId INTEGER, FOREIGN KEY(accountId) REFERENCES Account(id))",
-        "CREATE TABLE Score (id INTEGER PRIMARY KEY AUTOINCREMENT, studentCode TEXT NOT NULL, teacherCode TEXT NOT NULL, subject TEXT NOT NULL, score REAL NOT NULL CHECK(score >= 0 AND score <= 10), FOREIGN KEY(studentCode) REFERENCES Student(code), FOREIGN KEY(teacherCode) REFERENCES Teacher(code))"
+        "CREATE TABLE IF NOT EXISTS Account (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "username TEXT NOT NULL UNIQUE, " +
+            "password TEXT NOT NULL, " +
+            "role TEXT NOT NULL" +
+        ");",
+
+        "CREATE TABLE IF NOT EXISTS Customer (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "fullname TEXT NOT NULL, " +
+            "phone TEXT NOT NULL, " +
+            "email TEXT, " +
+            "accountId INTEGER NOT NULL, " +
+            "FOREIGN KEY(accountId) REFERENCES Account(id) ON DELETE CASCADE" +
+        ");",
+
+        "CREATE TABLE IF NOT EXISTS Fruit (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "name TEXT NOT NULL, " +
+            "category TEXT NOT NULL, " +
+            "price REAL NOT NULL CHECK(price > 0), " +
+            "quantity INTEGER NOT NULL CHECK(quantity >= 0), " +
+            "expiryDate TEXT NOT NULL, " +
+            "description TEXT" +
+        ");",
+
+        "CREATE TABLE IF NOT EXISTS \"Order\" (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "customerId INTEGER NOT NULL, " +
+            "orderDate TEXT NOT NULL, " +
+            "totalAmount REAL NOT NULL, " +
+            "status TEXT NOT NULL, " +
+            "FOREIGN KEY(customerId) REFERENCES Customer(id) ON DELETE CASCADE" +
+        ");"
     };
-};
+}
