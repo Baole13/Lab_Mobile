@@ -2,22 +2,22 @@ package com.example.studentmanager.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.example.studentmanager.R;
 import com.example.studentmanager.dal.DBHelper;
+import com.example.studentmanager.models.Customer;
 import com.example.studentmanager.utils.AuthManager;
 
-/** Displays the Customer row linked to the authenticated Account.id. */
+/** Displays the Customer profile linked to the authenticated Account.id. */
 public class CustomerProfileActivity extends Activity {
     private DBHelper dbHelper;
 
-    @Override protected void onCreate(Bundle state) {
+    @Override
+    protected void onCreate(Bundle state) {
         super.onCreate(state);
         AuthManager auth = new AuthManager(this);
-        if (!auth.isLoggedIn() || !AuthManager.CUSTOMER.equals(auth.getRole())) {
+        if (!auth.isLoggedIn() || !auth.isCustomer()) {
             openLogin();
             return;
         }
@@ -40,19 +40,18 @@ public class CustomerProfileActivity extends Activity {
         TextView status = findViewById(R.id.tvProfileStatus);
         dbHelper = new DBHelper(this);
 
-        try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT fullname, phone, email FROM Customer WHERE accountId = ? LIMIT 1",
-                new String[]{String.valueOf(accountId)})) {
-            if (cursor.moveToFirst()) {
-                fullname.setText(valueOrDash(cursor.getString(0)));
-                phone.setText(valueOrDash(cursor.getString(1)));
-                email.setText(valueOrDash(cursor.getString(2)));
+        try {
+            Customer customer = dbHelper.getCustomerByAccountId(accountId);
+            if (customer != null) {
+                fullname.setText(valueOrDash(customer.getFullname()));
+                phone.setText(valueOrDash(customer.getPhone()));
+                email.setText(valueOrDash(customer.getEmail()));
                 status.setText("");
             } else {
                 status.setText("Chưa tìm thấy hồ sơ Customer liên kết với tài khoản này.");
             }
-        } catch (SQLiteException exception) {
-            status.setText("Chưa thể tải hồ sơ. Kiểm tra bảng Customer có các cột fullname, phone, email, accountId.");
+        } catch (Exception exception) {
+            status.setText("Chưa thể tải hồ sơ: " + exception.getMessage());
         }
     }
 
@@ -67,7 +66,8 @@ public class CustomerProfileActivity extends Activity {
         finish();
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         if (dbHelper != null) dbHelper.close();
         super.onDestroy();
     }

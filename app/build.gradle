@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 
 android {
     namespace 'com.example.studentmanager'
-    compileSdk 35
+    compileSdk 34
     defaultConfig {
         applicationId 'com.example.studentmanager'
         minSdk 23
