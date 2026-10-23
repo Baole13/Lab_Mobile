@@ -28,6 +28,10 @@ public class EditRecordActivity extends Activity {
         if (!auth.isLoggedIn() || !AuthManager.ADMIN.equals(auth.getRole()) || spec == null) {
             finish(); return;
         }
+        if (Schema.FRUIT.equals(spec.name)) {
+            startActivity(new android.content.Intent(this, FruitManagementActivity.class));
+            finish(); return;
+        }
         db = new DBHelper(this);
         recordId = getIntent().getLongExtra("id", -1);
         setContentView(R.layout.activity_form);

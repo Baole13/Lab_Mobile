@@ -30,9 +30,11 @@ public class MainActivity extends Activity {
             profileButton.setOnClickListener(v ->
                 startActivity(new Intent(this, CustomerProfileActivity.class)));
         } else if (AuthManager.ADMIN.equals(auth.getRole())) {
-            TextView notice = new TextView(this);
-            notice.setText("Đã đăng nhập quyền Admin. Màn hình quản lý trái cây/đơn hàng sẽ được ghép từ các module tương ứng.");
-            menu.addView(notice);
+            Button fruitButton = new Button(this);
+            fruitButton.setText("Quản lý trái cây");
+            menu.addView(fruitButton);
+            fruitButton.setOnClickListener(v -> startActivity(
+                new Intent(this, com.example.studentmanager.activities.FruitManagementActivity.class)));
         }
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
             auth.logout();

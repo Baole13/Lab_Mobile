@@ -6,7 +6,15 @@ import java.util.List;
 /** CHANGE HERE when the official test gives different tables/columns. */
 public final class Schema {
     private Schema() {}
-    public static final int DB_VERSION = 1; // BUMP when schema changes on an existing install.
+    public static final int DB_VERSION = 3;
+    public static final String FRUIT = "Fruit";
+    public static final String CREATE_FRUIT_SQL =
+        "CREATE TABLE IF NOT EXISTS Fruit (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "name TEXT NOT NULL CHECK(length(trim(name)) > 0), " +
+        "category TEXT NOT NULL CHECK(length(trim(category)) > 0), " +
+        "price REAL NOT NULL CHECK(price > 0), " +
+        "quantity INTEGER NOT NULL CHECK(typeof(quantity) = 'integer' AND quantity >= 0), " +
+        "expiryDate TEXT NOT NULL, description TEXT NOT NULL DEFAULT '')";
     public static final String STUDENT = "Student";
     public static final String TEACHER = "Teacher";
     public static final String SCORE = "Score";
@@ -44,13 +52,22 @@ public final class Schema {
         new Field("subject", "Subject", TEXT, true),
         new Field("score", "Score (0 to 10)", DECIMAL, true));
 
+    public static final Table FRUITS = new Table(FRUIT, "Quản lý trái cây",
+        new Field("name", "Tên", TEXT, true),
+        new Field("category", "Loại", TEXT, true),
+        new Field("price", "Giá (VNĐ)", DECIMAL, true),
+        new Field("quantity", "Số lượng", INTEGER, true),
+        new Field("expiryDate", "Hạn sử dụng (yyyy-MM-dd)", TEXT, true),
+        new Field("description", "Mô tả", TEXT, false));
+
     public static Table find(String name) {
-        for (Table t : Arrays.asList(STUDENTS, TEACHERS, SCORES))
+        for (Table t : Arrays.asList(STUDENTS, TEACHERS, SCORES, FRUITS))
             if (t.name.equals(name)) return t;
         return null; // whitelist unknown table names
     }
 
     public static final String[] CREATE_SQL = {
+        CREATE_FRUIT_SQL,
         "CREATE TABLE Account (id INTEGER PRIMARY KEY, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, role TEXT NOT NULL)",
         "CREATE TABLE Student (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT NOT NULL UNIQUE, fullname TEXT NOT NULL, email TEXT, accountId INTEGER, FOREIGN KEY(accountId) REFERENCES Account(id))",
         "CREATE TABLE Teacher (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT NOT NULL UNIQUE, fullname TEXT NOT NULL, email TEXT, accountId INTEGER, FOREIGN KEY(accountId) REFERENCES Account(id))",

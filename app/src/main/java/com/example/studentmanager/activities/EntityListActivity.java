@@ -38,6 +38,10 @@ public class EntityListActivity extends Activity {
             (!canEdit && !Schema.SCORE.equals(table) && !Schema.STUDENT.equals(table))) {
             finish(); return;
         }
+        if (Schema.FRUIT.equals(spec.name)) {
+            startActivity(new android.content.Intent(this, FruitManagementActivity.class));
+            finish(); return;
+        }
         db = new DBHelper(this);
         setContentView(R.layout.activity_list);
         ((TextView)findViewById(R.id.title)).setText(spec.title + (canEdit ? "" : " • My data"));

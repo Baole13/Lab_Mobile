@@ -9,6 +9,7 @@
         <activity android:name=".activities.EntityListActivity" android:exported="false" />
         <activity android:name=".activities.LoginActivity" android:exported="false" />
         <activity android:name=".activities.CustomerProfileActivity" android:exported="false" />
+        <activity android:name=".activities.FruitManagementActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -3,6 +3,8 @@ package com.example.studentmanager.dal;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.ContentObservable;
+import android.database.ContentObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.example.studentmanager.utils.AuthManager;
@@ -11,7 +13,13 @@ import java.util.List;
 
 /** Generic CRUD: changing Table/Field names in Schema automatically changes forms/listing. */
 public class DBHelper extends SQLiteOpenHelper {
-    public DBHelper(Context context) { super(context, "test2.db", null, Schema.DB_VERSION); }
+    private final Context appContext;
+    // shortcut: Notifications cover this process's DBHelper writes; use cross-process invalidation if needed.
+    private static final ContentObservable fruitChanges = new ContentObservable();
+    public DBHelper(Context context) {
+        super(context.getApplicationContext(), "test2.db", null, Schema.DB_VERSION);
+        appContext = context.getApplicationContext();
+    }
     @Override public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         db.setForeignKeyConstraintsEnabled(true);
@@ -32,16 +40,20 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO Score(studentCode,teacherCode,subject,score) VALUES('S001','T001','Android',8.5)");
     }
     @Override public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-        // DEMO ONLY: destroys existing data; don't do this in production.
-        db.execSQL("DROP TABLE IF EXISTS Score");
-        db.execSQL("DROP TABLE IF EXISTS Student");
-        db.execSQL("DROP TABLE IF EXISTS Teacher");
-        db.execSQL("DROP TABLE IF EXISTS Account");
-        onCreate(db);
+        if (oldV < 3 && newV >= 3) db.execSQL(Schema.CREATE_FRUIT_SQL);
     }
     private void requireTable(String table) {
-        if (Schema.find(table) == null) throw new IllegalArgumentException("Invalid table: " + table);
+        if (!Schema.FRUIT.equals(table) && Schema.find(table) == null)
+            throw new IllegalArgumentException("Invalid table: " + table);
     }
+    private void requireFruitAdmin(String table) {
+        if (!Schema.FRUIT.equals(table)) return;
+        AuthManager auth = new AuthManager(appContext);
+        if (!auth.isLoggedIn() || !AuthManager.ADMIN.equals(auth.getRole()))
+            throw new SecurityException("Chỉ Admin đã đăng nhập mới được thay đổi trái cây.");
+    }
+    public static void registerFruitObserver(ContentObserver observer) { fruitChanges.registerObserver(observer); }
+    public static void unregisterFruitObserver(ContentObserver observer) { fruitChanges.unregisterObserver(observer); }
     public List<ContentValues> rows(String table, String selection, String[] args) {
         requireTable(table);
         List<ContentValues> result = new ArrayList<>();
@@ -62,15 +74,25 @@ public class DBHelper extends SQLiteOpenHelper {
         return matches.isEmpty() ? null : matches.get(0);
     }
     public long insert(String table, ContentValues values) {
-        requireTable(table); return getWritableDatabase().insertOrThrow(table, null, values);
+        requireTable(table);
+        requireFruitAdmin(table);
+        long id = getWritableDatabase().insertOrThrow(table, null, values);
+        if (Schema.FRUIT.equals(table)) fruitChanges.dispatchChange(false);
+        return id;
     }
     public int update(String table, long id, ContentValues values) {
         requireTable(table);
-        return getWritableDatabase().update(table, values, "id=?", new String[]{String.valueOf(id)});
+        requireFruitAdmin(table);
+        int count = getWritableDatabase().update(table, values, "id=?", new String[]{String.valueOf(id)});
+        if (count > 0 && Schema.FRUIT.equals(table)) fruitChanges.dispatchChange(false);
+        return count;
     }
     public int delete(String table, long id) {
         requireTable(table);
-        return getWritableDatabase().delete(table, "id=?", new String[]{String.valueOf(id)});
+        requireFruitAdmin(table);
+        int count = getWritableDatabase().delete(table, "id=?", new String[]{String.valueOf(id)});
+        if (count > 0 && Schema.FRUIT.equals(table)) fruitChanges.dispatchChange(false);
+        return count;
     }
     public String studentCodeForAccount(int accountId) {
         try (Cursor c = getReadableDatabase().query("Student", new String[]{"code"},
