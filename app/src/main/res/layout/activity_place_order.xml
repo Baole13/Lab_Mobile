@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface_background"
+    android:orientation="vertical">
+
+    <!-- Top Header & Search Section (px-4 = 16dp) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface_card"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/space_lg"
+        android:paddingTop="@dimen/space_lg"
+        android:paddingBottom="@dimen/space_md">
+
+        <!-- Top Navigation Bar (44dp+ touch targets) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnBackFromPlaceOrder"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:background="@drawable/bg_search_bar"
+                android:text="←"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/space_md"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Đặt Mua Trái Cây"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_h1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvCustomerInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Khách hàng"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_caption" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnViewOrderHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_target_min"
+                android:background="@drawable/bg_chip_active"
+                android:paddingHorizontal="12dp"
+                android:text="Đơn của tôi"
+                android:textAllCaps="false"
+                android:textColor="@color/primary_700"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Search Bar (Rule 3.C: h-12 = 48dp, rounded-2xl, bg-slate-100) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_bar_height"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@drawable/bg_search_bar"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/space_md">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="🔍"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/etSearchFruit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Tìm kiếm trái cây tươi..."
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="@dimen/text_body" />
+        </LinearLayout>
+
+        <!-- Horizontal Category / Status Bar (Rule 2.3 & 3.B: single-line scroll, gap 10dp) -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/categoryChipContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <!-- Scrollable 2-Column Product Grid Area -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/space_lg"
+        android:paddingTop="@dimen/space_md"
+        android:paddingBottom="@dimen/space_md">
+
+        <LinearLayout
+            android:id="@+id/fruitOrderContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <!-- Sticky Bottom Bar (CheckoutBar - Rule 3.E & 2.1: bg-white, border-t, pb-6 = 24dp) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_checkout_bar"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/space_xl"
+        android:paddingTop="@dimen/space_md"
+        android:paddingBottom="@dimen/space_2xl">
+
+        <TextView
+            android:id="@+id/tvSelectedSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Chưa chọn sản phẩm nào"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_caption" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Left: Total Label + Large Total Amount -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tổng thanh toán (Pending)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_caption" />
+
+                <TextView
+                    android:id="@+id/tvTotalAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0đ"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Right: Primary Emerald CTA Button -->
+            <Button
+                android:id="@+id/btnSubmitOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/search_bar_height"
+                android:background="@drawable/bg_btn_primary"
+                android:paddingHorizontal="@dimen/space_2xl"
+                android:text="Đặt hàng ngay"
+                android:textAllCaps="false"
+                android:textColor="@color/text_inverse"
+                android:textSize="@dimen/text_body"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
