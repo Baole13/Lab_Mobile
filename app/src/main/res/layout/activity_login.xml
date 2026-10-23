@@ -1,26 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:fillViewport="true" android:background="#F4F7FB">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="24dp" android:gravity="center_vertical">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Test 2 Starter" android:textSize="28sp" android:textStyle="bold"
-            android:textColor="#16253A" android:layout_marginBottom="8dp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Login • 2 roles • SharedPreferences" android:textSize="15sp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F4F7FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🍎 Fruit Shop Management"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#16253A"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đăng nhập hệ thống • 2 quyền: Admin / Customer"
+            android:textSize="14sp"
+            android:textColor="#5A6A80"
             android:layout_marginBottom="24dp" />
-        <EditText android:id="@+id/username" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Username"
-            android:inputType="textPersonName" android:singleLine="true" />
-        <EditText android:id="@+id/password" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Password"
-            android:inputType="textPassword" android:singleLine="true" />
-        <Button android:id="@+id/btnLogin" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="LOGIN"
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tên đăng nhập (Username)"
+            android:inputType="textPersonName"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mật khẩu (Password)"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ĐĂNG NHẬP"
             android:layout_marginTop="16dp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Demo: teacher / 123456    |    student / 123456"
-            android:layout_marginTop="16dp" android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tài khoản demo:\n• Admin: admin / 123456\n• Customer: customer / 123456"
+            android:layout_marginTop="20dp"
+            android:textSize="13sp"
+            android:textColor="#666666" />
+
     </LinearLayout>
 </ScrollView>

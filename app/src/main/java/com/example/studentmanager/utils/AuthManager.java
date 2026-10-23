@@ -17,10 +17,6 @@ public class AuthManager {
     public static final String ADMIN = "Admin";
     public static final String CUSTOMER = "Customer";
 
-    // Backward-compatibility aliases for template classes
-    public static final String TEACHER = ADMIN;
-    public static final String STUDENT = CUSTOMER;
-
     private static final String FILE = "login_accounts";
     private final SharedPreferences prefs;
     private final Context context;
@@ -36,9 +32,6 @@ public class AuthManager {
         JSONArray accounts = new JSONArray();
         accounts.put(createAccount(1, "admin", "123456", ADMIN));
         accounts.put(createAccount(2, "customer", "123456", CUSTOMER));
-        // Keep teacher/student for legacy test backward-compatibility
-        accounts.put(createAccount(3, "teacher", "123456", ADMIN));
-        accounts.put(createAccount(4, "student", "123456", CUSTOMER));
         prefs.edit().putString("accounts_json", accounts.toString()).apply();
     }
 

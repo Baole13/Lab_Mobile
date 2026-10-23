@@ -18,11 +18,6 @@ public final class Schema {
     public static final String FRUIT = "Fruit";
     public static final String ORDER = "Order";
 
-    // Legacy aliases for template compatibility
-    public static final String STUDENT = CUSTOMER;
-    public static final String TEACHER = FRUIT;
-    public static final String SCORE = ORDER;
-
     // Roles
     public static final String ROLE_ADMIN = "Admin";
     public static final String ROLE_CUSTOMER = "Customer";

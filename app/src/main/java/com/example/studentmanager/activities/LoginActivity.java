@@ -10,17 +10,28 @@ import com.example.studentmanager.R;
 import com.example.studentmanager.utils.AuthManager;
 
 public class LoginActivity extends Activity {
-    @Override protected void onCreate(Bundle state) {
+    @Override
+    protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_login);
         AuthManager auth = new AuthManager(this);
-        EditText user = findViewById(R.id.username), pass = findViewById(R.id.password);
+        EditText user = findViewById(R.id.username);
+        EditText pass = findViewById(R.id.password);
+
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            if (auth.login(user.getText().toString(), pass.getText().toString())) {
+            String u = user.getText().toString().trim();
+            String p = pass.getText().toString();
+            if (u.isEmpty() || p.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập tên đăng nhập và mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (auth.login(u, p)) {
                 Intent i = new Intent(this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
-            } else Toast.makeText(this, "Wrong username or password", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Sai tên đăng nhập hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
