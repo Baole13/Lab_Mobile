@@ -59,7 +59,7 @@ public class FruitRepositoryTest {
     private FruitEntity fruit() {
         FruitEntity fruit = new FruitEntity();
         fruit.name = "Táo"; fruit.category = "Nội địa"; fruit.price = 45000;
-        fruit.quantity = 10; fruit.expiryDate = "2026-10-26";
+        fruit.quantity = 10; fruit.expiryDate = "2099-12-31";
         return fruit;
     }
     @Test public void crudPreservesConcurrentStock() throws Exception {
@@ -98,6 +98,92 @@ public class FruitRepositoryTest {
         });
         assertNull(await(editor.get().getOperation()).getError());
         assertEquals(1, database.fruitDao().getAll().size());
+    }
+
+    @Test public void sampleDataCoversAllBoundariesAndDoesNotResetEdits() throws Exception {
+        String today = "2026-10-23";
+        int originalOrders = helper.getAllOrders().size();
+        assertEquals(15, com.example.studentmanager.dal.DemoData.insert(helper.getWritableDatabase(), today));
+        java.util.List<FruitEntity> fruits = database.fruitDao().getAll();
+        assertEquals(10, fruits.size());
+        int expired = 0, expiresToday = 0, soon = 0, outOfStock = 0, lowStock = 0;
+        long quantity = 0; double value = 0;
+        for (FruitEntity fruit : fruits) {
+            com.example.studentmanager.utils.FruitValidation.validate(fruit.name, fruit.category, fruit.price, fruit.quantity, fruit.expiryDate);
+            com.example.studentmanager.utils.ExpiryPolicy.Status status = com.example.studentmanager.utils.ExpiryPolicy.evaluate(fruit.expiryDate, today);
+            if (status == com.example.studentmanager.utils.ExpiryPolicy.Status.EXPIRED) expired++;
+            if (status == com.example.studentmanager.utils.ExpiryPolicy.Status.EXPIRES_TODAY) expiresToday++;
+            if (status == com.example.studentmanager.utils.ExpiryPolicy.Status.EXPIRING_SOON) soon++;
+            if (fruit.quantity == 0) outOfStock++;
+            if (fruit.quantity > 0 && fruit.quantity <= 5) lowStock++;
+            quantity += fruit.quantity; value += fruit.price * fruit.quantity;
+        }
+        assertEquals(1, expired); assertEquals(1, expiresToday); assertEquals(3, soon);
+        assertEquals(1, outOfStock); assertEquals(4, lowStock);
+        assertEquals(84, quantity); assertEquals(7210000.5, value, 0.001);
+        assertTrue(auth.login("demo_customer", "123456"));
+        int customerId = helper.getCustomerByAccountId(auth.getAccountId()).getId();
+        assertEquals(3, helper.getOrdersByCustomer(customerId).size());
+        assertTrue(auth.login("admin", "123456"));
+        ContentValues changed = new ContentValues(); changed.put("quantity", 2);
+        helper.update("Fruit", fruits.get(0).id, changed);
+        assertEquals(0, com.example.studentmanager.dal.DemoData.insert(helper.getWritableDatabase(), today));
+        assertEquals(2, database.fruitDao().getById(fruits.get(0).id).quantity);
+        assertEquals(originalOrders + 3, helper.getAllOrders().size());
+        assertEquals(13, com.example.studentmanager.dal.DemoData.insert(helper.getWritableDatabase(), "2026-10-24"));
+        assertEquals(20, database.fruitDao().getAll().size());
+    }
+
+    @Test public void demoDataRequiresAdminAndPreservesExistingRows() throws Exception {
+        FruitEntity existing = fruit();
+        int id = await(repository.save(existing)).getValue().intValue();
+        assertTrue(auth.login("customer", "123456"));
+        assertTrue(await(repository.loadDemoData()).getError() instanceof SecurityException);
+        assertEquals(1, database.fruitDao().getAll().size());
+        assertTrue(auth.login("admin", "123456"));
+        assertNull(await(repository.loadDemoData()).getError());
+        assertEquals(11, database.fruitDao().getAll().size());
+        assertEquals("Táo", database.fruitDao().getById(id).name);
+    }
+
+    @Test public void orderFailureRollsBackEveryStockChange() throws Exception {
+        FruitEntity first = fruit(); first.quantity = 3;
+        int firstId = await(repository.save(first)).getValue().intValue();
+        FruitEntity second = fruit(); second.quantity = 1;
+        int secondId = await(repository.save(second)).getValue().intValue();
+        assertTrue(auth.login("customer", "123456"));
+        int customerId = helper.getCustomerByAccountId(auth.getAccountId()).getId();
+        int oldOrderCount = helper.getAllOrders().size();
+        java.util.Map<Integer, Integer> quantities = new java.util.LinkedHashMap<>();
+        quantities.put(firstId, 2); quantities.put(secondId, 2);
+        try { helper.placeOrder(customerId, quantities, "2026-10-23 12:00", 180000); fail("Expected insufficient stock"); }
+        catch (IllegalStateException expected) { }
+        assertEquals(3, helper.getFruitById(firstId).quantity);
+        assertEquals(1, helper.getFruitById(secondId).quantity);
+        assertEquals(oldOrderCount, helper.getAllOrders().size());
+        quantities.put(secondId, 1);
+        try { helper.placeOrder(customerId, quantities, "2026-10-23 12:00", 1); fail("Expected changed price"); }
+        catch (IllegalStateException expected) { }
+        assertEquals(3, helper.getFruitById(firstId).quantity);
+        long orderId = helper.placeOrder(customerId, quantities, "2026-10-23 12:00", 135000);
+        assertTrue(orderId > 0);
+        assertEquals(1, helper.getFruitById(firstId).quantity);
+        assertEquals(0, helper.getFruitById(secondId).quantity);
+        assertEquals(oldOrderCount + 1, helper.getAllOrders().size());
+        assertFalse(helper.reduceFruitQuantity(secondId, 1));
+        assertEquals(0, helper.getFruitById(secondId).quantity);
+    }
+
+    @Test public void invalidDatesAreNotAvailableAndMissingMigrationKeepsData() {
+        com.example.studentmanager.models.Fruit fruit = new com.example.studentmanager.models.Fruit();
+        fruit.quantity = 2; fruit.expiryDate = "2099-02-30";
+        assertFalse(fruit.isAvailable());
+        fruit.expiryDate = com.example.studentmanager.utils.ExpiryPolicy.todayIsoDate();
+        assertTrue(fruit.isAvailable());
+        try { helper.onUpgrade(helper.getWritableDatabase(), 1, 2); fail("Expected missing migration"); }
+        catch (IllegalStateException expected) { }
+        assertNotNull(helper.getAccountByUsername("admin"));
+        assertFalse(helper.getAllOrders().isEmpty());
     }
 
     private <T> FruitResult<T> await(LiveData<FruitResult<T>> data) throws Exception {

@@ -34,6 +34,25 @@ public final class FruitListFragment extends Fragment {
         viewModel = new ViewModelProvider(this,
                 new FruitListViewModel.Factory(activity.getFruitRepository()))
                 .get(FruitListViewModel.class);
+        com.example.studentmanager.viewmodels.FruitEditorViewModel demoViewModel = new ViewModelProvider(this,
+                new com.example.studentmanager.viewmodels.FruitEditorViewModel.Factory(activity.getFruitRepository(), 0))
+                .get(com.example.studentmanager.viewmodels.FruitEditorViewModel.class);
+        binding.btnDemoData.setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Nạp dữ liệu demo?")
+                .setMessage("Thêm 10 trái cây theo ngày hôm nay, tài khoản demo_customer/123456 và 3 đơn hàng mẫu. Không xóa hoặc đặt lại dữ liệu cũ; nạp lại trong cùng ngày không tạo trùng.")
+                .setNegativeButton("Hủy", null).setPositiveButton("Nạp dữ liệu", (dialog, which) -> demoViewModel.loadDemoData()).show());
+        demoViewModel.getOperation().observe(getViewLifecycleOwner(), result -> {
+            if (result == null) return;
+            binding.btnDemoData.setEnabled(!result.isLoading());
+            binding.btnDemoData.setText(result.isLoading() ? "Đang nạp dữ liệu…" : "Nạp dữ liệu demo");
+            if (!result.isLoading()) {
+                String message = result.getError() != null ? "Không thể nạp demo: " + result.getError().getMessage()
+                        : "Đã thêm " + result.getValue() + " bản ghi. Tìm DEMO để xem dữ liệu mẫu.";
+                demoViewModel.consumeResult();
+                android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_LONG).show();
+            }
+        });
+        binding.btnHome.setOnClickListener(v -> activity.finish());
         binding.btnAdd.setOnClickListener(v -> activity.openFruitForm(0));
         binding.search.setText(viewModel.getSearch());
         binding.search.addTextChangedListener(new android.text.TextWatcher() {

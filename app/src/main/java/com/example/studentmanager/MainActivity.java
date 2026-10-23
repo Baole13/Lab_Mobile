@@ -87,30 +87,30 @@ public class MainActivity extends Activity {
         menuContainer.removeAllViews();
 
         if (auth.isAdmin()) {
-            tvRoleSubtitle.setText("ADMIN DASHBOARD");
-            tvGreeting.setText("Xin chào, " + auth.getUsername() + " 👋");
+            tvRoleSubtitle.setText("Quản trị viên");
+            tvGreeting.setText("Xin chào, " + auth.getUsername() + "");
 
             addTableCard(
                     "🍎",
-                    "Quản lý Trái Cây (Fruits CRUD)",
+                    "Quản lý trái cây",
                     "Thêm, sửa, xóa, tìm kiếm & kiểm tra hạn sử dụng",
                     Schema.FRUIT
             );
             addNewRecordCard(
                     "➕",
-                    "Thêm Trái Cây Mới",
+                    "Thêm trái cây",
                     "Tạo mới trái cây (kiểm tra price > 0, hạn dùng)",
                     Schema.FRUIT
             );
             addActivityCard(
                     "📦",
-                    "Quản lý Đơn Hàng (Order Management)",
-                    "Duyệt trạng thái đơn: Pending → Confirmed → Completed",
+                    "Quản lý đơn hàng",
+                    "Xác nhận và theo dõi tiến độ đơn hàng",
                     OrderManagementActivity.class
             );
             addTableCard(
                     "👥",
-                    "Quản lý Khách Hàng (Customers)",
+                    "Quản lý khách hàng",
                     "Xem và quản lý danh sách hồ sơ khách hàng",
                     Schema.CUSTOMER
             );
@@ -120,30 +120,30 @@ public class MainActivity extends Activity {
                     ? customer.getFullname()
                     : auth.getUsername();
 
-            tvRoleSubtitle.setText("CUSTOMER DASHBOARD");
-            tvGreeting.setText("Xin chào, " + displayName + " 🛒");
+            tvRoleSubtitle.setText("Khách hàng");
+            tvGreeting.setText("Xin chào, " + displayName + "");
 
             addActivityCard(
                     "🛒",
-                    "Đặt Mua Trái Cây (Place Order)",
+                    "Đặt mua trái cây",
                     "Chọn trái cây còn hạn & còn hàng, tính tổng tiền tự động",
                     PlaceOrderActivity.class
             );
             addActivityCard(
                     "📋",
-                    "Lịch Sử Đơn Hàng (Order History)",
-                    "Theo dõi trạng thái đơn Pending / Confirmed / Completed",
+                    "Lịch sử đơn hàng",
+                    "Theo dõi đơn chờ xác nhận và đã hoàn thành",
                     OrderHistoryActivity.class
             );
             addTableCard(
                     "🍉",
-                    "Xem & Tìm Kiếm Trái Cây (Fruits)",
+                    "Danh mục trái cây",
                     "Tra cứu danh mục trái cây, giá bán và hạn sử dụng",
                     Schema.FRUIT
             );
             addActivityCard(
                     "👤",
-                    "Hồ Sơ Khách Hàng (Customer Profile)",
+                    "Hồ sơ của tôi",
                     "Xem và cập nhật họ tên, số điện thoại, email",
                     CustomerProfileActivity.class
             );
@@ -185,8 +185,8 @@ public class MainActivity extends Activity {
 
             String summary = "• Trái cây: " + fruits.size() + " loại (Còn bán: " + availableFruits
                     + " | Hết hạn: " + expiredFruits + " | Hết hàng: " + outOfStockFruits + ")\n"
-                    + "• Đơn hàng: " + allOrders.size() + " đơn (Pending: " + pendingCount
-                    + " | Confirmed: " + confirmedCount + " | Completed: " + completedCount + ")\n"
+                    + "• Đơn hàng: " + allOrders.size() + " đơn (Chờ xác nhận: " + pendingCount
+                    + " | Đã xác nhận: " + confirmedCount + " | Hoàn thành: " + completedCount + ")\n"
                     + "• Doanh thu hoàn thành: " + currencyFormat.format(completedRevenue) + "đ";
             tvDashboardSummary.setText(summary);
         } else {
@@ -232,7 +232,7 @@ public class MainActivity extends Activity {
         card.setOrientation(LinearLayout.HORIZONTAL);
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setBackgroundResource(R.drawable.bg_card);
-        int pad = dp(14);
+        int pad = getResources().getDimensionPixelSize(R.dimen.space_lg);
         card.setPadding(pad, pad, pad, pad);
 
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
@@ -258,17 +258,17 @@ public class MainActivity extends Activity {
 
         TextView tvTitle = new TextView(this);
         tvTitle.setText(title);
-        tvTitle.setTextSize(15f);
+        tvTitle.setTextSize(16f);
         tvTitle.setTypeface(null, Typeface.BOLD);
-        tvTitle.setTextColor(Color.parseColor("#0F172A"));
-        tvTitle.setMaxLines(1);
+        tvTitle.setTextColor(getColor(R.color.text_primary));
+        tvTitle.setMaxLines(2);
         tvTitle.setEllipsize(TextUtils.TruncateAt.END);
         textCol.addView(tvTitle);
 
         TextView tvSub = new TextView(this);
         tvSub.setText(subtitle);
         tvSub.setTextSize(12f);
-        tvSub.setTextColor(Color.parseColor("#64748B"));
+        tvSub.setTextColor(getColor(R.color.text_secondary));
         tvSub.setMaxLines(2);
         tvSub.setEllipsize(TextUtils.TruncateAt.END);
         textCol.addView(tvSub);
@@ -279,7 +279,7 @@ public class MainActivity extends Activity {
         tvArrow.setText("→");
         tvArrow.setTextSize(16f);
         tvArrow.setTypeface(null, Typeface.BOLD);
-        tvArrow.setTextColor(Color.parseColor("#059669"));
+        tvArrow.setTextColor(getColor(R.color.primary_700));
         tvArrow.setGravity(Gravity.CENTER);
         tvArrow.setLayoutParams(new LinearLayout.LayoutParams(dp(36), dp(36)));
         card.addView(tvArrow);

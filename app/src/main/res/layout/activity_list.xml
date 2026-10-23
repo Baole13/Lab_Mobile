@@ -1,16 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:padding="16dp">
-    <TextView android:id="@+id/title" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:text="Records"
-        android:textColor="#16253A" android:textSize="24sp"
-        android:textStyle="bold" />
-    <EditText android:id="@+id/search" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:hint="Search records..."
-        android:inputType="text" android:singleLine="true" />
-    <Button android:id="@+id/add" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:text="+ ADD RECORD" />
-    <ListView android:id="@+id/list" android:layout_width="match_parent"
-        android:layout_height="0dp" android:layout_weight="1" />
+<?xml version='1.0' encoding='utf-8'?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dp" android:background="@color/surface_background">
+    <TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Danh sách" android:textColor="@color/text_primary" android:textSize="@dimen/text_hero" android:textStyle="bold" style="@style/Widget.FruitShop.Title" />
+    <EditText android:id="@+id/search" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Search records..." android:inputType="text" android:singleLine="true" android:minHeight="48dp" />
+    <Button android:id="@+id/add" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Thêm bản ghi" style="@style/Widget.FruitShop.Button" android:textAllCaps="false" android:minHeight="48dp" />
+    <ListView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 </LinearLayout>

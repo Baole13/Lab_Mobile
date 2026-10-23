@@ -19,8 +19,8 @@
 
     <!-- Component Touch Targets & Heights -->
     <dimen name="search_bar_height">48dp</dimen>
-    <dimen name="touch_target_min">44dp</dimen>
-    <dimen name="stepper_btn_size">36dp</dimen>
+    <dimen name="touch_target_min">48dp</dimen>
+    <dimen name="stepper_btn_size">48dp</dimen>
     <dimen name="chip_gap">10dp</dimen>
 
     <!-- Typography Scale -->
@@ -29,5 +29,5 @@
     <dimen name="text_h2">16sp</dimen>
     <dimen name="text_body">14sp</dimen>
     <dimen name="text_caption">12sp</dimen>
-    <dimen name="text_badge">11sp</dimen>
+    <dimen name="text_badge">12sp</dimen>
 </resources>

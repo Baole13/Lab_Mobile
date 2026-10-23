@@ -1,28 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="20dp">
-    <TextView android:id="@+id/tvTitle" android:text="Quản lý trái cây" android:textColor="@color/fruit_text_primary"
-        android:textSize="24sp" android:textStyle="bold" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
-    <Button android:id="@+id/btnAdd" android:text="Thêm trái cây" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <EditText android:id="@+id/search" android:hint="Tìm theo tên hoặc loại" android:inputType="text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <TextView android:text="Lọc theo tình trạng" android:labelFor="@+id/filter" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <Spinner android:id="@+id/filter" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <TextView android:text="Sắp xếp" android:labelFor="@+id/sort" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <Spinner android:id="@+id/sort" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <TextView android:id="@+id/statistics" android:accessibilityLiveRegion="polite" android:layout_width="match_parent" android:layout_height="wrap_content" />
+<?xml version='1.0' encoding='utf-8'?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="20dp" android:background="@color/surface_background">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="16dp">
+        <Button style="@style/Widget.FruitShop.Button.Secondary" android:id="@+id/btnHome" android:layout_width="48dp" android:layout_height="48dp" android:padding="0dp" android:text="←" android:contentDescription="Quay lại trang chủ" />
+        <TextView android:id="@+id/tvTitle" android:text="Quản lý trái cây" android:textColor="@color/fruit_text_primary" android:textSize="@dimen/text_h1" android:textStyle="bold" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginBottom="0dp" style="@style/Widget.FruitShop.Title" android:layout_weight="1" android:layout_marginStart="12dp" />
+    </LinearLayout>
+    <Button android:id="@+id/btnAdd" android:text="Thêm trái cây" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/Widget.FruitShop.Button" android:textAllCaps="false" android:minHeight="48dp" />
+    <Button android:id="@+id/btnDemoData" android:text="Nạp dữ liệu demo" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/Widget.FruitShop.Button.Secondary" android:textAllCaps="false" android:minHeight="48dp" />
+    <EditText android:id="@+id/search" android:hint="Tìm theo tên hoặc loại" android:inputType="text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:singleLine="true" />
+    <TextView android:text="Lọc theo tình trạng" android:labelFor="@+id/filter" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/Widget.FruitShop.Label" />
+    <Spinner android:id="@+id/filter" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_search_bar" android:paddingStart="12dp" android:paddingEnd="12dp" />
+    <TextView android:text="Sắp xếp" android:labelFor="@+id/sort" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/Widget.FruitShop.Label" />
+    <Spinner android:id="@+id/sort" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_search_bar" android:paddingStart="12dp" android:paddingEnd="12dp" />
+    <TextView android:id="@+id/statistics" android:accessibilityLiveRegion="polite" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_chip_active" android:padding="12dp" android:textSize="@dimen/text_caption" android:layout_marginBottom="12dp" />
     <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
-        <ProgressBar android:id="@+id/progressLoading" android:visibility="gone" android:layout_gravity="center"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/tvEmpty" android:visibility="gone" android:text="Chưa có trái cây hoặc không có kết quả phù hợp."
-            android:textColor="@color/fruit_text_secondary" android:gravity="center"
-            android:layout_width="match_parent" android:layout_height="match_parent" />
-        <LinearLayout android:id="@+id/errorGroup" android:visibility="gone" android:gravity="center" android:orientation="vertical"
-            android:layout_width="match_parent" android:layout_height="match_parent">
-            <TextView android:text="Không thể tải danh sách trái cây." android:textColor="@color/fruit_text_primary"
-                android:layout_width="wrap_content" android:layout_height="wrap_content" />
-            <Button android:id="@+id/btnRetry" android:text="Thử lại" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <ProgressBar android:id="@+id/progressLoading" android:visibility="gone" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvEmpty" android:visibility="gone" android:text="Chưa có trái cây hoặc không có kết quả phù hợp." android:textColor="@color/fruit_text_secondary" android:gravity="center" android:layout_width="match_parent" android:layout_height="match_parent" />
+        <LinearLayout android:id="@+id/errorGroup" android:visibility="gone" android:gravity="center" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView android:text="Không thể tải danh sách trái cây." android:textColor="@color/fruit_text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <Button android:id="@+id/btnRetry" android:text="Thử lại" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/Widget.FruitShop.Button" android:textAllCaps="false" android:minHeight="48dp" />
         </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerFruits" android:visibility="gone"
-            android:clipToPadding="false" android:paddingBottom="12dp" android:layout_width="match_parent" android:layout_height="match_parent" />
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerFruits" android:visibility="gone" android:clipToPadding="false" android:paddingBottom="12dp" android:layout_width="match_parent" android:layout_height="match_parent" />
     </FrameLayout>
 </LinearLayout>

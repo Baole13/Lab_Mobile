@@ -52,6 +52,15 @@ public final class FruitRepository {
         });
     }
 
+    public LiveData<FruitResult<Long>> loadDemoData() {
+        return write(() -> {
+            try (DBHelper helper = new DBHelper(appContext)) {
+                return com.example.studentmanager.dal.DemoData.insert(helper.getWritableDatabase(),
+                        com.example.studentmanager.utils.ExpiryPolicy.todayIsoDate());
+            }
+        });
+    }
+
     public LiveData<FruitResult<Long>> delete(int id) {
         return write(() -> {
             if (fruitDao.deleteById(id) == 0) throw new IllegalStateException("Trái cây đã bị xóa.");

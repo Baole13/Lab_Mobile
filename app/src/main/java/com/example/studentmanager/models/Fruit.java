@@ -2,9 +2,6 @@ package com.example.studentmanager.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class Fruit {
     public int id;
@@ -62,17 +59,9 @@ public class Fruit {
      * Rule: expiryDate < today => Expired (true); expiryDate >= today => Valid (false).
      */
     public boolean isExpired() {
-        if (expiryDate == null || expiryDate.trim().isEmpty()) return false;
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            sdf.setLenient(false);
-            Date exp = sdf.parse(expiryDate.trim());
-            String todayStr = sdf.format(new Date());
-            Date today = sdf.parse(todayStr);
-            return exp != null && exp.before(today);
-        } catch (Exception e) {
-            return false;
-        }
+        return com.example.studentmanager.utils.ExpiryPolicy.evaluate(expiryDate,
+                com.example.studentmanager.utils.ExpiryPolicy.todayIsoDate())
+                == com.example.studentmanager.utils.ExpiryPolicy.Status.EXPIRED;
     }
 
     /**
@@ -81,7 +70,7 @@ public class Fruit {
      * - Must not be expired
      */
     public boolean isAvailable() {
-        return quantity > 0 && !isExpired();
+        return quantity > 0 && com.example.studentmanager.utils.ExpiryPolicy.isValidDate(expiryDate) && !isExpired();
     }
 
     public ContentValues toContentValues() {

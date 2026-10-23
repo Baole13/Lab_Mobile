@@ -101,7 +101,7 @@ public class OrderHistoryActivity extends Activity {
 
     private void styleChip(Button chip, boolean active) {
         chip.setBackgroundResource(active ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
-        chip.setTextColor(Color.parseColor(active ? "#047857" : "#64748B"));
+        chip.setTextColor(getColor(active ? R.color.primary_700 : R.color.text_secondary));
         chip.setTypeface(null, active ? Typeface.BOLD : Typeface.NORMAL);
     }
 
@@ -133,14 +133,14 @@ public class OrderHistoryActivity extends Activity {
                 : auth.getUsername();
 
         tvHistorySubtitle.setText(customerLabel + " • Tổng: " + sourceOrders.size()
-                + " (Pending: " + pendingCount
-                + " | Confirmed: " + confirmedCount
-                + " | Completed: " + completedCount + ")");
+                + " (Chờ xác nhận: " + pendingCount
+                + " | Đã xác nhận: " + confirmedCount
+                + " | Hoàn thành: " + completedCount + ")");
 
         if (filtered.isEmpty()) {
             TextView tvEmpty = new TextView(this);
             tvEmpty.setText("Chưa có đơn hàng nào trong danh mục này.");
-            tvEmpty.setTextColor(Color.parseColor("#64748B"));
+            tvEmpty.setTextColor(getColor(R.color.text_secondary));
             tvEmpty.setTextSize(14f);
             tvEmpty.setGravity(Gravity.CENTER);
             tvEmpty.setPadding(dp(16), dp(36), dp(16), dp(36));
@@ -157,7 +157,7 @@ public class OrderHistoryActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackgroundResource(R.drawable.bg_card);
-        int pad = dp(14);
+        int pad = getResources().getDimensionPixelSize(R.dimen.space_lg);
         card.setPadding(pad, pad, pad, pad);
 
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
@@ -175,7 +175,7 @@ public class OrderHistoryActivity extends Activity {
         tvOrderId.setText("Đơn hàng #" + order.getId());
         tvOrderId.setTextSize(16f);
         tvOrderId.setTypeface(null, Typeface.BOLD);
-        tvOrderId.setTextColor(Color.parseColor("#0F172A"));
+        tvOrderId.setTextColor(getColor(R.color.text_primary));
         tvOrderId.setMaxLines(1);
         tvOrderId.setEllipsize(TextUtils.TruncateAt.END);
         tvOrderId.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -183,11 +183,10 @@ public class OrderHistoryActivity extends Activity {
 
         TextView tvStatus = new TextView(this);
         String statusStr = order.getStatus() == null ? Order.STATUS_PENDING : order.getStatus();
-        tvStatus.setText(statusStr.toUpperCase(Locale.ROOT));
-        tvStatus.setTextSize(11f);
+        com.example.studentmanager.utils.OrderBadge.bind(tvStatus, statusStr);
+        tvStatus.setTextSize(12f);
         tvStatus.setTypeface(null, Typeface.BOLD);
         tvStatus.setPadding(dp(10), dp(4), dp(10), dp(4));
-        applyStatusBadgeStyle(tvStatus, statusStr);
         topRow.addView(tvStatus);
 
         card.addView(topRow);
@@ -195,7 +194,7 @@ public class OrderHistoryActivity extends Activity {
         TextView tvDate = new TextView(this);
         tvDate.setText("Ngày đặt: " + order.getOrderDate() + " • Mã KH: #" + order.getCustomerId());
         tvDate.setTextSize(12f);
-        tvDate.setTextColor(Color.parseColor("#64748B"));
+        tvDate.setTextColor(getColor(R.color.text_secondary));
         LinearLayout.LayoutParams dateParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -213,7 +212,7 @@ public class OrderHistoryActivity extends Activity {
         tvTotal.setText(currencyFormat.format(order.getTotalAmount()) + "đ / đơn");
         tvTotal.setTextSize(16f);
         tvTotal.setTypeface(null, Typeface.BOLD);
-        tvTotal.setTextColor(Color.parseColor("#059669"));
+        tvTotal.setTextColor(getColor(R.color.primary_700));
         tvTotal.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         bottomRow.addView(tvTotal);
 
@@ -221,7 +220,7 @@ public class OrderHistoryActivity extends Activity {
         tvViewDetail.setText("Xem chi tiết →");
         tvViewDetail.setTextSize(12f);
         tvViewDetail.setTypeface(null, Typeface.BOLD);
-        tvViewDetail.setTextColor(Color.parseColor("#047857"));
+        tvViewDetail.setTextColor(getColor(R.color.primary_700));
         bottomRow.addView(tvViewDetail);
 
         card.addView(bottomRow);
@@ -229,18 +228,6 @@ public class OrderHistoryActivity extends Activity {
         return card;
     }
 
-    private void applyStatusBadgeStyle(TextView badge, String status) {
-        if (Order.STATUS_PENDING.equalsIgnoreCase(status)) {
-            badge.setBackgroundResource(R.drawable.bg_badge_warning);
-            badge.setTextColor(Color.parseColor("#D97706"));
-        } else if (Order.STATUS_CONFIRMED.equalsIgnoreCase(status)) {
-            badge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            badge.setTextColor(Color.parseColor("#1D4ED8"));
-        } else {
-            badge.setBackgroundResource(R.drawable.bg_badge_success);
-            badge.setTextColor(Color.parseColor("#047857"));
-        }
-    }
 
     private void showOrderDetailDialog(Order order) {
         String statusExplanation;
@@ -263,7 +250,7 @@ public class OrderHistoryActivity extends Activity {
         new AlertDialog.Builder(this)
                 .setTitle("Chi tiết đơn hàng #" + order.getId())
                 .setMessage(message)
-                .setPositiveButton("ĐÓNG", null)
+                .setPositiveButton("Đóng", null)
                 .show();
     }
 

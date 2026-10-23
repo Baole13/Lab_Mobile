@@ -2,12 +2,69 @@
 <resources>
     <style name="Theme.Starter" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:colorPrimary">@color/primary_500</item>
-        <item name="android:colorPrimaryDark">@color/primary_600</item>
-        <item name="android:colorAccent">@color/primary_500</item>
+        <item name="colorPrimary">@color/primary_700</item>
+        <item name="colorPrimaryVariant">@color/primary_700</item>
+        <item name="colorSecondary">@color/primary_700</item>
+        <item name="android:colorPrimary">@color/primary_700</item>
+        <item name="android:colorPrimaryDark">@color/primary_700</item>
+        <item name="android:colorAccent">@color/primary_700</item>
         <item name="android:windowBackground">@color/surface_background</item>
         <item name="android:statusBarColor">@color/surface_card</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/surface_card</item>
+        <item name="android:buttonStyle">@style/Widget.FruitShop.Button</item>
+        <item name="buttonStyle">@style/Widget.FruitShop.Button</item>
+        <item name="android:editTextStyle">@style/Widget.FruitShop.Input</item>
+        <item name="editTextStyle">@style/Widget.FruitShop.Input</item>
+        <item name="android:textViewStyle">@style/Widget.FruitShop.Text</item>
+        <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
+    </style>
+    <style name="Widget.FruitShop.Text" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <style name="Widget.FruitShop.Title" parent="Widget.FruitShop.Text">
+        <item name="android:textSize">@dimen/text_hero</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Widget.FruitShop.Label" parent="Widget.FruitShop.Text">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/space_lg</item>
+        <item name="android:layout_marginBottom">@dimen/space_sm</item>
+    </style>
+    <style name="Widget.FruitShop.Button" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/bg_btn_primary</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:textColor">@color/button_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+    <style name="Widget.FruitShop.Button.Secondary" parent="Widget.FruitShop.Button">
+        <item name="android:background">@drawable/bg_chip_inactive</item>
+        <item name="android:textColor">@color/primary_700</item>
+    </style>
+    <style name="Widget.FruitShop.Button.Danger" parent="Widget.FruitShop.Button">
+        <item name="android:background">@drawable/bg_badge_error</item>
+        <item name="android:textColor">@color/status_discount_text</item>
+    </style>
+    <style name="Widget.FruitShop.Input" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/bg_search_bar</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 </resources>

@@ -1,26 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:fillViewport="true" android:background="#F4F7FB">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="24dp" android:gravity="center_vertical">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Fruit Shop" android:textSize="28sp" android:textStyle="bold"
-            android:textColor="#16253A" android:layout_marginBottom="8dp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Đăng nhập với quyền Admin hoặc Customer" android:textSize="15sp"
-            android:layout_marginBottom="24dp" />
-        <EditText android:id="@+id/username" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Tên đăng nhập"
-            android:inputType="textPersonName" android:singleLine="true" />
-        <EditText android:id="@+id/password" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Mật khẩu"
-            android:inputType="textPassword" android:singleLine="true" />
-        <Button android:id="@+id/btnLogin" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="ĐĂNG NHẬP"
-            android:layout_marginTop="16dp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Demo Admin: admin / 123456\nDemo Customer: customer / 123456"
-            android:layout_marginTop="16dp" android:textSize="13sp" />
+<?xml version='1.0' encoding='utf-8'?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:background="@color/surface_background">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/space_xl" android:paddingTop="@dimen/space_3xl">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Fruit Shop" android:textSize="28sp" android:textStyle="bold" android:textColor="@color/primary_700" android:layout_marginBottom="8dp" style="@style/Widget.FruitShop.Title" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Đăng nhập với quyền Admin hoặc Customer" android:textSize="15sp" android:layout_marginBottom="24dp" />
+        <EditText android:id="@+id/username" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Tên đăng nhập" android:inputType="textPersonName" android:singleLine="true" android:minHeight="48dp" />
+        <EditText android:id="@+id/password" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Mật khẩu" android:inputType="textPassword" android:singleLine="true" android:minHeight="48dp" />
+        <Button android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Đăng nhập" android:layout_marginTop="16dp" style="@style/Widget.FruitShop.Button" android:textAllCaps="false" android:minHeight="48dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Demo Admin: admin / 123456\nDemo Customer: customer / 123456" android:layout_marginTop="16dp" android:textSize="13sp" />
     </LinearLayout>
 </ScrollView>

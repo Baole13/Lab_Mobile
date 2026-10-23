@@ -38,6 +38,8 @@ import java.util.Map;
  * Tích hợp với DBHelper, Fruit, Customer, Order trên nhánh dev và Grocery App UI Design System.
  */
 public class PlaceOrderActivity extends Activity {
+    private static final java.util.concurrent.ExecutorService ORDER_EXECUTOR = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private boolean submittingOrder;
     private static final String FILTER_ALL = "ALL";
     private static final String FILTER_AVAILABLE = "AVAILABLE";
     private static final String FILTER_TODAY = "TODAY";
@@ -139,10 +141,10 @@ public class PlaceOrderActivity extends Activity {
 
     private void renderCategoryChips() {
         categoryChipContainer.removeAllViews();
-        addChip("🍎 Tất cả", FILTER_ALL);
-        addChip("✅ Còn đặt được", FILTER_AVAILABLE);
-        addChip("⏳ Hạn hôm nay", FILTER_TODAY);
-        addChip("⚠️ Hết hạn / Hết hàng", FILTER_UNAVAILABLE);
+        addChip("Tất cả", FILTER_ALL);
+        addChip("Còn hàng", FILTER_AVAILABLE);
+        addChip("Hết hạn hôm nay", FILTER_TODAY);
+        addChip("Không thể đặt", FILTER_UNAVAILABLE);
     }
 
     private void addChip(String label, String filterCode) {
@@ -153,13 +155,13 @@ public class PlaceOrderActivity extends Activity {
 
         boolean isActive = filterCode.equals(activeFilter);
         chip.setBackgroundResource(isActive ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
-        chip.setTextColor(Color.parseColor(isActive ? "#047857" : "#64748B"));
+        chip.setTextColor(getColor(isActive ? R.color.primary_700 : R.color.text_secondary));
         chip.setTypeface(null, isActive ? Typeface.BOLD : Typeface.NORMAL);
         chip.setPadding(dp(14), 0, dp(14), 0);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                dp(38)
+                dp(48)
         );
         params.rightMargin = dp(10);
         chip.setLayoutParams(params);
@@ -211,7 +213,7 @@ public class PlaceOrderActivity extends Activity {
         if (filtered.isEmpty()) {
             TextView tvEmpty = new TextView(this);
             tvEmpty.setText("Không tìm thấy trái cây phù hợp.");
-            tvEmpty.setTextColor(Color.parseColor("#64748B"));
+            tvEmpty.setTextColor(getColor(R.color.text_secondary));
             tvEmpty.setTextSize(14f);
             tvEmpty.setGravity(Gravity.CENTER);
             tvEmpty.setPadding(dp(16), dp(32), dp(16), dp(32));
@@ -250,7 +252,7 @@ public class PlaceOrderActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackgroundResource(R.drawable.bg_card);
-        int pad = dp(14);
+        int pad = getResources().getDimensionPixelSize(R.dimen.space_lg);
         card.setPadding(pad, pad, pad, pad);
 
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
@@ -267,7 +269,7 @@ public class PlaceOrderActivity extends Activity {
         boolean canOrder = fruit.isAvailable();
 
         TextView tvBadge = new TextView(this);
-        tvBadge.setTextSize(11f);
+        tvBadge.setTextSize(12f);
         tvBadge.setTypeface(null, Typeface.BOLD);
         tvBadge.setPadding(dp(8), dp(3), dp(8), dp(3));
         LinearLayout.LayoutParams badgeParams = new LinearLayout.LayoutParams(
@@ -277,22 +279,12 @@ public class PlaceOrderActivity extends Activity {
         badgeParams.bottomMargin = dp(8);
         tvBadge.setLayoutParams(badgeParams);
 
-        if (expired) {
-            tvBadge.setText("EXPIRED");
+        com.example.studentmanager.utils.ExpiryBadge.bind(tvBadge,
+                com.example.studentmanager.utils.ExpiryPolicy.evaluate(fruit.getExpiryDate(), todayString()));
+        if (outOfStock) {
+            tvBadge.setText("Hết hàng");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_error);
-            tvBadge.setTextColor(Color.parseColor("#DC2626"));
-        } else if (outOfStock) {
-            tvBadge.setText("OUT OF STOCK");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_error);
-            tvBadge.setTextColor(Color.parseColor("#DC2626"));
-        } else if (isExpiringToday(fruit)) {
-            tvBadge.setText("HẠN HÔM NAY");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_warning);
-            tvBadge.setTextColor(Color.parseColor("#D97706"));
-        } else {
-            tvBadge.setText("CÒN HẠN");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_success);
-            tvBadge.setTextColor(Color.parseColor("#047857"));
+            tvBadge.setTextColor(getColor(R.color.status_discount_text));
         }
         card.addView(tvBadge);
 
@@ -313,7 +305,7 @@ public class PlaceOrderActivity extends Activity {
         tvName.setText(fruit.getName());
         tvName.setTextSize(14f);
         tvName.setTypeface(null, Typeface.BOLD);
-        tvName.setTextColor(Color.parseColor("#0F172A"));
+        tvName.setTextColor(getColor(R.color.text_primary));
         tvName.setMaxLines(1);
         tvName.setEllipsize(TextUtils.TruncateAt.END);
         card.addView(tvName);
@@ -321,7 +313,7 @@ public class PlaceOrderActivity extends Activity {
         TextView tvUnitMeta = new TextView(this);
         tvUnitMeta.setText("1 kg • Kho: " + fruit.getQuantity() + "\nHSD: " + fruit.getExpiryDate());
         tvUnitMeta.setTextSize(12f);
-        tvUnitMeta.setTextColor(Color.parseColor("#64748B"));
+        tvUnitMeta.setTextColor(getColor(R.color.text_secondary));
         LinearLayout.LayoutParams metaParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -333,9 +325,9 @@ public class PlaceOrderActivity extends Activity {
 
         TextView tvPrice = new TextView(this);
         tvPrice.setText(currencyFormat.format(fruit.getPrice()) + "đ / kg");
-        tvPrice.setTextSize(15f);
+        tvPrice.setTextSize(16f);
         tvPrice.setTypeface(null, Typeface.BOLD);
-        tvPrice.setTextColor(Color.parseColor("#059669"));
+        tvPrice.setTextColor(getColor(R.color.primary_700));
         LinearLayout.LayoutParams priceParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -352,11 +344,11 @@ public class PlaceOrderActivity extends Activity {
             btnDisabled.setAllCaps(false);
             btnDisabled.setEnabled(false);
             btnDisabled.setTextSize(12f);
-            btnDisabled.setTextColor(Color.parseColor("#94A3B8"));
+            btnDisabled.setTextColor(getColor(R.color.text_secondary));
             btnDisabled.setBackgroundResource(R.drawable.bg_stepper_container);
             btnDisabled.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    dp(38)
+                    dp(48)
             ));
             card.addView(btnDisabled);
         } else if (currentQty == 0) {
@@ -369,7 +361,7 @@ public class PlaceOrderActivity extends Activity {
             btnQuickAdd.setBackgroundResource(R.drawable.bg_btn_add);
             btnQuickAdd.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    dp(38)
+                    dp(48)
             ));
             btnQuickAdd.setOnClickListener(v -> {
                 selectedQuantities.put(fruit.getId(), 1);
@@ -386,34 +378,36 @@ public class PlaceOrderActivity extends Activity {
             stepper.setPadding(p1, p1, p1, p1);
             stepper.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    dp(42)
+                    dp(56)
             ));
 
             Button btnMinus = new Button(this);
-            btnMinus.setText(currentQty == 1 ? "🗑" : "–");
-            btnMinus.setTextColor(Color.parseColor(currentQty == 1 ? "#EF4444" : "#0F172A"));
+            btnMinus.setText("–");
+            btnMinus.setContentDescription("Giảm số lượng " + fruit.getName());
+            btnMinus.setTextColor(getColor(currentQty == 1 ? R.color.status_discount_text : R.color.text_primary));
             btnMinus.setTextSize(14f);
             btnMinus.setTypeface(null, Typeface.BOLD);
             btnMinus.setPadding(0, 0, 0, 0);
             btnMinus.setBackgroundResource(R.drawable.bg_stepper_btn_white);
-            btnMinus.setLayoutParams(new LinearLayout.LayoutParams(dp(36), dp(34)));
+            btnMinus.setLayoutParams(new LinearLayout.LayoutParams(dp(48), dp(48)));
 
             TextView tvCount = new TextView(this);
             tvCount.setText(String.valueOf(currentQty));
             tvCount.setTextSize(14f);
             tvCount.setTypeface(null, Typeface.BOLD);
-            tvCount.setTextColor(Color.parseColor("#0F172A"));
+            tvCount.setTextColor(getColor(R.color.text_primary));
             tvCount.setGravity(Gravity.CENTER);
             tvCount.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
             Button btnPlus = new Button(this);
             btnPlus.setText("+");
+            btnPlus.setContentDescription("Tăng số lượng " + fruit.getName());
             btnPlus.setTextColor(Color.WHITE);
-            btnPlus.setTextSize(15f);
+            btnPlus.setTextSize(16f);
             btnPlus.setTypeface(null, Typeface.BOLD);
             btnPlus.setPadding(0, 0, 0, 0);
             btnPlus.setBackgroundResource(R.drawable.bg_btn_add);
-            btnPlus.setLayoutParams(new LinearLayout.LayoutParams(dp(36), dp(34)));
+            btnPlus.setLayoutParams(new LinearLayout.LayoutParams(dp(48), dp(48)));
 
             btnMinus.setOnClickListener(v -> {
                 int q = selectedQuantities.containsKey(fruit.getId()) ? selectedQuantities.get(fruit.getId()) : 0;
@@ -522,42 +516,33 @@ public class PlaceOrderActivity extends Activity {
                 .setTitle("Xác nhận đặt hàng")
                 .setMessage(message)
                 .setPositiveButton("ĐẶT HÀNG NGAY", (dialog, which) -> {
-                    try {
-                        // Kiểm tra và trừ tồn kho từng loại trái cây
-                        for (Map.Entry<Integer, Integer> entry : selectedQuantities.entrySet()) {
-                            int fruitId = entry.getKey();
-                            int qty = entry.getValue() == null ? 0 : entry.getValue();
-                            if (qty <= 0) continue;
-                            Fruit latest = db.getFruitById(fruitId);
-                            if (latest == null || !latest.isAvailable() || latest.getQuantity() < qty) {
-                                Toast.makeText(this, "Trái cây không đủ tồn kho hoặc đã hết hạn!", Toast.LENGTH_LONG).show();
-                                loadFruitsAndRender();
-                                return;
-                            }
-                        }
-
-                        for (Map.Entry<Integer, Integer> entry : selectedQuantities.entrySet()) {
-                            int fruitId = entry.getKey();
-                            int qty = entry.getValue() == null ? 0 : entry.getValue();
-                            if (qty > 0) {
-                                db.reduceFruitQuantity(fruitId, qty);
-                            }
-                        }
-
-                        Order newOrder = new Order(
-                                currentCustomer.getId(),
-                                nowStr,
-                                orderTotal,
-                                Order.STATUS_PENDING
-                        );
-                        long orderId = db.insertOrder(newOrder);
-                        selectedQuantities.clear();
-                        loadFruitsAndRender();
-                        Toast.makeText(this, "Đặt hàng thành công! Đơn #" + orderId + " (Pending)", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(this, OrderHistoryActivity.class));
-                    } catch (Exception e) {
-                        Toast.makeText(this, "Lỗi đặt hàng: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    if (submittingOrder) return;
+                    submittingOrder = true;
+                    btnSubmitOrder.setEnabled(false);
+                    java.util.Map<Integer, Integer> orderQuantities = new java.util.LinkedHashMap<>();
+                    for (Map.Entry<Integer, Integer> entry : selectedQuantities.entrySet()) {
+                        if (entry.getValue() != null && entry.getValue() > 0) orderQuantities.put(entry.getKey(), entry.getValue());
                     }
+                    int customerId = currentCustomer.getId();
+                    ORDER_EXECUTOR.execute(() -> {
+                        try (DBHelper orderDatabase = new DBHelper(getApplicationContext())) {
+                            long orderId = orderDatabase.placeOrder(customerId, orderQuantities, nowStr, orderTotal);
+                            runOnUiThread(() -> {
+                                submittingOrder = false;
+                                if (isFinishing() || isDestroyed()) return;
+                                selectedQuantities.clear(); loadFruitsAndRender();
+                                Toast.makeText(this, "Đặt hàng thành công! Đơn #" + orderId + " (Pending)", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(this, OrderHistoryActivity.class));
+                            });
+                        } catch (Exception error) {
+                            runOnUiThread(() -> {
+                                submittingOrder = false;
+                                if (isFinishing() || isDestroyed()) return;
+                                loadFruitsAndRender();
+                                Toast.makeText(this, "Không thể đặt hàng: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    });
                 })
                 .setNegativeButton("HỦY", null)
                 .show();

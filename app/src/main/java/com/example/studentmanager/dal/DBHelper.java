@@ -23,8 +23,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static void unregisterFruitObserver(android.database.ContentObserver observer) { fruitChanges.unregisterObserver(observer); }
 
 
+    private final Context appContext;
     public DBHelper(Context context) {
-        super(context, Schema.DB_NAME, null, Schema.DB_VERSION);
+        super(context.getApplicationContext(), Schema.DB_NAME, null, Schema.DB_VERSION);
+        appContext = context.getApplicationContext();
     }
 
     @Override
@@ -120,11 +122,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-        db.execSQL("DROP TABLE IF EXISTS \"" + Schema.ORDER + "\"");
-        db.execSQL("DROP TABLE IF EXISTS " + Schema.FRUIT);
-        db.execSQL("DROP TABLE IF EXISTS " + Schema.CUSTOMER);
-        db.execSQL("DROP TABLE IF EXISTS " + Schema.ACCOUNT);
-        onCreate(db);
+        throw new IllegalStateException("Chưa có migration từ phiên bản " + oldV + " sang " + newV + ". Giữ nguyên dữ liệu hiện tại.");
     }
 
     private void requireTable(String table) {
@@ -268,18 +266,49 @@ public class DBHelper extends SQLiteOpenHelper {
      * Atomically reduces fruit stock quantity when placing an order.
      * @return true if successful, false if insufficient stock or fruit not found.
      */
-    public synchronized boolean reduceFruitQuantity(int fruitId, int quantityToDeduct) {
+    public boolean reduceFruitQuantity(int fruitId, int quantityToDeduct) {
         if (quantityToDeduct <= 0) return false;
-        Fruit current = getFruitById(fruitId);
-        if (current == null || current.getQuantity() < quantityToDeduct) {
-            return false;
+        SQLiteDatabase db = getWritableDatabase();
+        int rows;
+        try (android.database.sqlite.SQLiteStatement statement = db.compileStatement(
+                "UPDATE Fruit SET quantity=quantity-? WHERE id=? AND quantity>=?")) {
+            statement.bindLong(1, quantityToDeduct); statement.bindLong(2, fruitId);
+            statement.bindLong(3, quantityToDeduct); rows = statement.executeUpdateDelete();
         }
-        int newQty = current.getQuantity() - quantityToDeduct;
-        ContentValues cv = new ContentValues();
-        cv.put("quantity", newQty);
-        int rows = getWritableDatabase().update(Schema.FRUIT, cv, "id = ?", new String[]{String.valueOf(fruitId)});
-        if (rows > 0) fruitChanges.dispatchChange(false);
+        if (rows > 0 && !db.inTransaction()) fruitChanges.dispatchChange(false);
         return rows > 0;
+    }
+
+    public long placeOrder(int customerId, java.util.Map<Integer, Integer> quantities,
+                           String orderDate, double expectedTotal) {
+        AuthManager auth = new AuthManager(appContext);
+        Customer customer = getCustomerByAccountId(auth.getAccountId());
+        if (!auth.isCustomer() || customer == null || customer.getId() != customerId)
+            throw new SecurityException("Bạn chỉ được đặt đơn cho tài khoản của mình.");
+        SQLiteDatabase db = getWritableDatabase();
+        long orderId;
+        // Trừ tồn và tạo đơn cùng transaction; bất kỳ lỗi nào cũng hoàn lại toàn bộ tồn kho.
+        db.beginTransaction();
+        try {
+            double total = 0;
+            for (java.util.Map.Entry<Integer, Integer> entry : quantities.entrySet()) {
+                Integer quantity = entry.getValue();
+                if (entry.getKey() == null || quantity == null || quantity <= 0)
+                    throw new IllegalArgumentException("Số lượng đặt hàng không hợp lệ.");
+                Fruit fruit = getFruitById(entry.getKey());
+                if (fruit == null || !fruit.isAvailable() || !reduceFruitQuantity(fruit.getId(), quantity))
+                    throw new IllegalStateException("Trái cây đã hết hạn hoặc không đủ tồn kho. Vui lòng chọn lại.");
+                total += fruit.getPrice() * quantity;
+            }
+            if (total <= 0 || Double.isNaN(total) || Double.isInfinite(total))
+                throw new IllegalArgumentException("Tổng tiền đơn hàng không hợp lệ.");
+            if (Double.compare(total, expectedTotal) != 0)
+                throw new IllegalStateException("Giá trái cây đã thay đổi. Vui lòng kiểm tra lại đơn hàng.");
+            orderId = insertOrder(new Order(customerId, orderDate, total, Order.STATUS_PENDING));
+            db.setTransactionSuccessful();
+        } finally { db.endTransaction(); }
+        fruitChanges.dispatchChange(false);
+        return orderId;
     }
 
     // =========================================================================

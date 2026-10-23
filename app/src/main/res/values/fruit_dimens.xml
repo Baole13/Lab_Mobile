@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <dimen name="fruit_spacing_xs">4dp</dimen>
-    <dimen name="fruit_spacing_sm">8dp</dimen>
-    <dimen name="fruit_spacing_md">12dp</dimen>
-    <dimen name="fruit_spacing_lg">16dp</dimen>
-    <dimen name="fruit_spacing_xl">20dp</dimen>
-    <dimen name="fruit_spacing_2xl">24dp</dimen>
-    <dimen name="fruit_spacing_3xl">32dp</dimen>
-    <dimen name="fruit_corner_small">8dp</dimen>
-    <dimen name="fruit_corner_medium">12dp</dimen>
-    <dimen name="fruit_corner_large">16dp</dimen>
-    <dimen name="fruit_touch_target">48dp</dimen>
-    <dimen name="fruit_text_title">20sp</dimen>
-    <dimen name="fruit_text_heading">16sp</dimen>
-    <dimen name="fruit_text_body">14sp</dimen>
-    <dimen name="fruit_text_caption">12sp</dimen>
+  <dimen name="fruit_spacing_xs">@dimen/space_xs</dimen>
+  <dimen name="fruit_spacing_sm">@dimen/space_sm</dimen>
+  <dimen name="fruit_spacing_md">@dimen/space_md</dimen>
+  <dimen name="fruit_spacing_lg">@dimen/space_lg</dimen>
+  <dimen name="fruit_spacing_xl">@dimen/space_xl</dimen>
+  <dimen name="fruit_spacing_2xl">@dimen/space_2xl</dimen>
+  <dimen name="fruit_spacing_3xl">@dimen/space_3xl</dimen>
+  <dimen name="fruit_corner_small">@dimen/radius_sm</dimen>
+  <dimen name="fruit_corner_medium">@dimen/radius_md</dimen>
+  <dimen name="fruit_corner_large">@dimen/radius_lg</dimen>
+  <dimen name="fruit_touch_target">@dimen/touch_target_min</dimen>
+  <dimen name="fruit_text_title">@dimen/text_h1</dimen>
+  <dimen name="fruit_text_heading">@dimen/text_h2</dimen>
+  <dimen name="fruit_text_body">@dimen/text_body</dimen>
+  <dimen name="fruit_text_caption">@dimen/text_caption</dimen>
 </resources>

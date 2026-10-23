@@ -113,7 +113,7 @@ public class OrderManagementActivity extends Activity {
 
     private void styleChip(Button chip, boolean active) {
         chip.setBackgroundResource(active ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
-        chip.setTextColor(Color.parseColor(active ? "#047857" : "#64748B"));
+        chip.setTextColor(getColor(active ? R.color.primary_700 : R.color.text_secondary));
         chip.setTypeface(null, active ? Typeface.BOLD : Typeface.NORMAL);
     }
 
@@ -166,14 +166,14 @@ public class OrderManagementActivity extends Activity {
         }
 
         tvAdminOrderSummary.setText("Tổng: " + allOrders.size()
-                + " (Pending: " + pendingCount
-                + " | Confirmed: " + confirmedCount
-                + " | Completed: " + completedCount + ")");
+                + " (Chờ xác nhận: " + pendingCount
+                + " | Đã xác nhận: " + confirmedCount
+                + " | Hoàn thành: " + completedCount + ")");
 
         if (displayedOrders.isEmpty()) {
             TextView tvEmpty = new TextView(this);
             tvEmpty.setText("Không có đơn hàng nào khớp bộ lọc.");
-            tvEmpty.setTextColor(Color.parseColor("#64748B"));
+            tvEmpty.setTextColor(getColor(R.color.text_secondary));
             tvEmpty.setTextSize(14f);
             tvEmpty.setGravity(Gravity.CENTER);
             tvEmpty.setPadding(dp(16), dp(36), dp(16), dp(36));
@@ -190,7 +190,7 @@ public class OrderManagementActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackgroundResource(R.drawable.bg_card);
-        int pad = dp(14);
+        int pad = getResources().getDimensionPixelSize(R.dimen.space_lg);
         card.setPadding(pad, pad, pad, pad);
 
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
@@ -208,9 +208,9 @@ public class OrderManagementActivity extends Activity {
 
         TextView tvTitle = new TextView(this);
         tvTitle.setText("Đơn #" + order.getId() + " • " + customerDisplay);
-        tvTitle.setTextSize(15f);
+        tvTitle.setTextSize(16f);
         tvTitle.setTypeface(null, Typeface.BOLD);
-        tvTitle.setTextColor(Color.parseColor("#0F172A"));
+        tvTitle.setTextColor(getColor(R.color.text_primary));
         tvTitle.setMaxLines(1);
         tvTitle.setEllipsize(TextUtils.TruncateAt.END);
         tvTitle.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -218,11 +218,10 @@ public class OrderManagementActivity extends Activity {
 
         TextView tvBadge = new TextView(this);
         String statusStr = order.getStatus() == null ? Order.STATUS_PENDING : order.getStatus();
-        tvBadge.setText(statusStr.toUpperCase(Locale.ROOT));
-        tvBadge.setTextSize(11f);
+        com.example.studentmanager.utils.OrderBadge.bind(tvBadge, statusStr);
+        tvBadge.setTextSize(12f);
         tvBadge.setTypeface(null, Typeface.BOLD);
         tvBadge.setPadding(dp(10), dp(4), dp(10), dp(4));
-        applyStatusBadgeStyle(tvBadge, statusStr);
         topRow.addView(tvBadge);
 
         card.addView(topRow);
@@ -230,7 +229,7 @@ public class OrderManagementActivity extends Activity {
         TextView tvMeta = new TextView(this);
         tvMeta.setText("Ngày đặt: " + order.getOrderDate());
         tvMeta.setTextSize(12f);
-        tvMeta.setTextColor(Color.parseColor("#64748B"));
+        tvMeta.setTextColor(getColor(R.color.text_secondary));
         LinearLayout.LayoutParams metaParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -248,7 +247,7 @@ public class OrderManagementActivity extends Activity {
         tvPrice.setText(currencyFormat.format(order.getTotalAmount()) + "đ / đơn");
         tvPrice.setTextSize(16f);
         tvPrice.setTypeface(null, Typeface.BOLD);
-        tvPrice.setTextColor(Color.parseColor("#059669"));
+        tvPrice.setTextColor(getColor(R.color.primary_700));
         tvPrice.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         actionRow.addView(tvPrice);
 
@@ -276,7 +275,7 @@ public class OrderManagementActivity extends Activity {
         } else {
             btnAction.setText("✓ Đã hoàn thành");
             btnAction.setEnabled(false);
-            btnAction.setTextColor(Color.parseColor("#047857"));
+            btnAction.setTextColor(getColor(R.color.primary_700));
             btnAction.setBackgroundResource(R.drawable.bg_badge_success);
         }
 
@@ -299,18 +298,6 @@ public class OrderManagementActivity extends Activity {
         }
     }
 
-    private void applyStatusBadgeStyle(TextView badge, String status) {
-        if (Order.STATUS_PENDING.equalsIgnoreCase(status)) {
-            badge.setBackgroundResource(R.drawable.bg_badge_warning);
-            badge.setTextColor(Color.parseColor("#D97706"));
-        } else if (Order.STATUS_CONFIRMED.equalsIgnoreCase(status)) {
-            badge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            badge.setTextColor(Color.parseColor("#1D4ED8"));
-        } else {
-            badge.setBackgroundResource(R.drawable.bg_badge_success);
-            badge.setTextColor(Color.parseColor("#047857"));
-        }
-    }
 
     private void showStatusUpdateDialog(Order order) {
         String nextStatus = getNextAllowedStatus(order.getStatus());
@@ -332,10 +319,10 @@ public class OrderManagementActivity extends Activity {
 
             builder.setMessage(info + "\n\nChuyển trạng thái tiếp theo: " + order.getStatus() + " → " + nextStatus)
                     .setPositiveButton(actionLabel, (dialog, which) -> confirmTransition(order, nextStatus))
-                    .setNegativeButton("ĐÓNG", null);
+                    .setNegativeButton("Đóng", null);
         } else {
             builder.setMessage(info + "\n\nĐơn hàng này đã ở trạng thái Completed (Hoàn thành).")
-                    .setPositiveButton("ĐÓNG", null);
+                    .setPositiveButton("Đóng", null);
         }
 
         builder.show();

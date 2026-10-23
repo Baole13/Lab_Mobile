@@ -24,6 +24,7 @@ public final class FruitEditorViewModel extends ViewModel {
     public boolean isBusy() { return busy; }
     public void retry() { repository.refresh(); }
     public void save(FruitEntity value) { if (!busy) track(repository.save(value)); }
+    public void loadDemoData() { if (!busy) track(repository.loadDemoData()); }
     public void delete(int id) { if (!busy) track(repository.delete(id)); }
     public void consumeResult() { operation.setValue(null); }
 
